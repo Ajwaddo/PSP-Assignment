@@ -20,12 +20,13 @@ import sqlite3
 from sqlite3.dbapi2 import SQLITE_SELECT, connect
 connection = sqlite3.connect('user.db')
 myCursor = connection.cursor()
-#in user.db, it has one table(userdata) that contains(user_name text, user_age int, ic_number text, phone_number text, post_code int, home_address text, q1 text, q2 text, q3 text, q4 text, q5 text, q6 text, priority int)""") 
+#in user.db, it has one table(userdata) that contains(user_name text, user_age int, ic_number text, phone_number text, post_code int, home_address text, q1 text, q2 text, q3 text, q4 text, q5 text, q6 text, priority int, vaccination_date text, vaccination_time text, vaccination_venue text)""") 
 
 ########## Hannah's part ##########
 ########################################################### FUNCTIONS FOR WELCOMEPAGE #########################################################################
 
 def login_func(): #login page
+    print("-"*50)
     Phone = input('Enter your phone number: \n').strip()
     IC = input('Enter your IC number: \n').strip()
     
@@ -34,11 +35,14 @@ def login_func(): #login page
     for value in retrieved_user_data:
         icNumber = value[2]
         phoneNumber = value[3]
-
-    if Phone == phoneNumber and IC == icNumber:
-        print("Succesfully login!")
-        loginPage()
-    else:
+    try:
+        if Phone == phoneNumber and IC == icNumber:
+            print("Succesfully login!")
+            loginPage()
+        else:
+            print("Login failed. Please try again.")
+            login_func()
+    except UnboundLocalError:
         print("Login failed. Please try again.")
         login_func()
 
@@ -55,7 +59,7 @@ def signup_func(): #signup page
     connection.commit()
     print("New user successfully registered!")
 
-def welcome_func(): #so users have the option to login or register
+def welcome_func(): #so users have the option whether to login or register
     print('What would you like to do?')
     option = int(input("1- Login \n2- Register: \n"))
     if option == 1:
@@ -65,7 +69,6 @@ def welcome_func(): #so users have the option to login or register
     else:
         welcome_func()
 
-
 ########################################################### FUNCTIONS FOR WELCOMEPAGE #########################################################################
 
 ########################################################### WELCOMEPAGE #########################################################################
@@ -73,22 +76,19 @@ def welcome_func(): #so users have the option to login or register
 print('Hello user!')
 print('Welcome to MySejahtera!\n')
 
-
-#welcome_func()
-
 ########################################################### WELCOMEPAGE #########################################################################
 ######### Hannah's part ##########
 
 ########## Hakeem's part ##########
 def loginPage():
-    pass
+    print("this is login page")
 ########## Hakeem's part ##########
 
 ########## Nabilah's part ##########
 #nabilah, please type out your code here
 ########## Nabilah's part ##########
 
-########## ajwad's part ###########    
+########## ajwad's part ###########   
 def createVaccinationCenter():
     #in table vaccinationCenters (name text, postcode int, address text, capacityHour int, capacityDay int)
     
@@ -104,45 +104,52 @@ def createVaccinationCenter():
 
     print("Vaccination center has been registered succesfully")
     whatToDo()
-
-def updateUserInfo():
-    def editUser():
-        pass
-
-    def deleteUser():
-        pass
-
-    def updateOption():
-        print("1- edit user information \n2- delete user information")
-        userInput = int(input())
-
-        if userInput == 1:
-            editUser()
-        elif userInput == 2:
-            deleteUser()
-        else:
-            print("Please enter a valid option.")
-            updateOption()
+  
+def deleteUser():
+    IC = input("Please enter the user IC: ")
+    myCursor.execute("DELETE FROM userdata WHERE ic_number = :IC", {'IC':IC})
+    connection.commit()
+    print("User deleted.")
 
 def assignAppointment():
     pass
 
 def sortList():
     #choose to sort list by what
+    def exit():
+                exitToAdminMenu = input("Press Q to close and go to admin menu: ").capitalize()
+                if exitToAdminMenu == "Q":
+                    whatToDo()
+                else:
+                    exit()
+
     print("How you want to sort the list? \n1- name \n2- age \n3- ic number \n4- phone number \n5- postcode \n6- priority")
     userInput = int(input())
+
     if userInput == 1:
-        pass
+        for val in myCursor.execute("SELECT * FROM userdata ORDER BY user_name"):
+            print(val)
+            exit()    
     elif userInput == 2:
-        pass
+        for val in myCursor.execute("SELECT * FROM userdata ORDER BY user_age"):
+            print(val)
+        exit()        
     elif userInput == 3:
-        pass
+        for val in myCursor.execute("SELECT * FROM userdata ORDER BY ic_number"):
+            print(val)
+        exit()         
     elif userInput == 4:
-        pass
+        for val in myCursor.execute("SELECT * FROM userdata ORDER BY phone_number"):
+            print(val)
+        exit()          
     elif userInput == 5:
-        pass
+        for val in myCursor.execute("SELECT * FROM userdata ORDER BY post_code"):
+            print(val)
+        exit()
     elif userInput == 6:
-        pass
+        for val in myCursor.execute("SELECT * FROM userdata ORDER BY priority"):
+            print(val)
+        exit() 
     else:
         print("Please enter a valid option.")
         sortList()
@@ -154,7 +161,7 @@ def whatToDo():
     if userInput == 1:
         createVaccinationCenter()
     elif userInput == 2:
-        updateUserInfo()
+        deleteUser()
     elif userInput == 3:
         assignAppointment()
     elif userInput == 4:
