@@ -37,6 +37,7 @@ def login_func(): #login page
 
     if Phone == phoneNumber and IC == icNumber:
         print("Succesfully login!")
+        loginPage()
     else:
         print("Login failed. Please try again.")
         login_func()
@@ -79,7 +80,8 @@ print('Welcome to MySejahtera!\n')
 ######### Hannah's part ##########
 
 ########## Hakeem's part ##########
-#hakeem, please type out your code here
+def loginPage():
+    pass
 ########## Hakeem's part ##########
 
 ########## Nabilah's part ##########
@@ -126,7 +128,24 @@ def assignAppointment():
     pass
 
 def sortList():
-    pass
+    #choose to sort list by what
+    print("How you want to sort the list? \n1- name \n2- age \n3- ic number \n4- phone number \n5- postcode \n6- priority")
+    userInput = int(input())
+    if userInput == 1:
+        pass
+    elif userInput == 2:
+        pass
+    elif userInput == 3:
+        pass
+    elif userInput == 4:
+        pass
+    elif userInput == 5:
+        pass
+    elif userInput == 6:
+        pass
+    else:
+        print("Please enter a valid option.")
+        sortList()
 
 def whatToDo():
     print("Welcome admin! What do you want to do? \n1- create vaccination center \n2- update user information \n3- assign appointment for user \n4- sort list of users \n5- logout \n6- exit")
