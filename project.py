@@ -73,7 +73,7 @@ print('Hello user!')
 print('Welcome to MySejahtera!\n')
 
 
-welcome_func()
+#welcome_func()
 
 ########################################################### WELCOMEPAGE #########################################################################
 ######### Hannah's part ##########
@@ -87,7 +87,69 @@ welcome_func()
 ########## Nabilah's part ##########
 
 ########## ajwad's part ###########    
-#ajwad, please type out your code here
+def createVaccinationCenter():
+    #in table vaccinationCenters (name text, postcode int, address text, capacityHour int, capacityDay int)
+    
+    VCNAME = input("Please enter the vaccination center name: ").title().strip()
+    VCPOSTCODE = int(input("Please enter the postcode: "))
+    VCADDRESS = input("Please enter the address: ")
+    VCCAPACITYHOUR = int(input("Please enter the capacity per hour: "))
+    VCCAPACITYDAY = int(input("Please enter the capacity per day: "))
+
+    #insert data to database
+    myCursor.execute("INSERT INTO vaccinationCenters (name, postcode, address, capacityHour, capacityDay), (?, ?, ?, ?, ?)", (VCNAME, VCPOSTCODE, VCADDRESS, VCCAPACITYHOUR, VCCAPACITYDAY))
+    connection.commit()
+
+    print("Vaccination center has been registered succesfully")
+    whatToDo()
+
+def updateUserInfo():
+    def editUser():
+        pass
+
+    def deleteUser():
+        pass
+
+    def updateOption():
+        print("1- edit user information \n2- delete user information")
+        userInput = int(input())
+
+        if userInput == 1:
+            editUser()
+        elif userInput == 2:
+            deleteUser()
+        else:
+            print("Please enter a valid option.")
+            updateOption()
+
+def assignAppointment():
+    pass
+
+def sortList():
+    pass
+
+def whatToDo():
+    print("Welcome admin! What do you want to do? \n1- create vaccination center \n2- update user information \n3- assign appointment for user \n4- sort list of users \n5- logout \n6- exit")
+    userInput = int(input())
+
+    if userInput == 1:
+        createVaccinationCenter()
+    elif userInput == 2:
+        updateUserInfo()
+    elif userInput == 3:
+        assignAppointment()
+    elif userInput == 4:
+        sortList()
+    elif userInput == 5:
+        welcome_func()
+    elif userInput == 6:
+        exit()
+    else:
+        print("Please enter a valid option.")
+        whatToDo()
+
 ########## ajwad's part ########### 
+
+welcome_func()
 
 
