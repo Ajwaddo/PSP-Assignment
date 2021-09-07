@@ -41,6 +41,9 @@ def login_func(): #login page
         print("Login failed. Please try again.")
         login_func()
 
+    DisplayData(IC)
+    
+
 def signup_func(): #signup page
     print("Please key in the following details:")
     name = input('Name: Capital Letters \n').title().strip()
@@ -79,7 +82,17 @@ print('Welcome to MySejahtera!\n')
 ######### Hannah's part ##########
 
 ########## Hakeem's part ##########
-#hakeem, please type out your code here
+
+def DisplayData(IC):
+    retrieved_user_data = myCursor.execute("SELECT user_name, ic_number FROM userdata WHERE ic_number = :IC", {'IC':IC}) #select name & ic number from database
+
+    for value in retrieved_user_data:
+        name = value[0]
+        ic_number = value[1]
+
+    print(f"Hello {name}")
+    print(f"IC {ic_number}")
+
 ########## Hakeem's part ##########
 
 ########## Nabilah's part ##########
