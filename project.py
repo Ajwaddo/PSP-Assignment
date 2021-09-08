@@ -20,54 +20,130 @@ import sqlite3
 from sqlite3.dbapi2 import SQLITE_SELECT, connect
 connection = sqlite3.connect('user.db')
 myCursor = connection.cursor()
-#in user.db, it has one table(userdata) that contains(user_name text, user_age int, ic_number text, phone_number text, post_code int, home_address text, q1 text, q2 text, q3 text, q4 text, q5 text, q6 text, priority int, vaccination_date text, vaccination_time text, vaccination_venue text)""") 
+#in user.db, it has one table(userdata) that contains(user_name text, user_age int, ic_number text, phone_number text, post_code int, home_address text, user_type text, q1 text, q2 text, q3 text, q4 text, q5 text, q6 text, priority int, vaccination_date text, vaccination_time text, vaccination_venue text) 
 
 ########## Hannah's part ##########
 ########################################################### FUNCTIONS FOR WELCOMEPAGE #########################################################################
 
-def login_func(): #login page
-    print("-"*50)
-    Phone = input('Enter your phone number: \n').strip()
-    IC = input('Enter your IC number: \n').strip()
-    
-    retrieved_user_data = myCursor.execute("SELECT * FROM userdata WHERE ic_number= :IC", {'IC':IC}) #to search the ic number inputted == with in the database or not
+def login_func(userOrAdmin): #login page
+    def userLogin(): #for user to log in
+        print("-"*50)
+        Phone = input('Enter your phone number: \n').strip()
+        IC = input('Enter your IC number: \n').strip()
+        
+        retrieved_user_data = myCursor.execute("SELECT * FROM userdata WHERE ic_number= :IC", {'IC':IC}) #to search the ic number inputted == with in the database or not
 
-    for value in retrieved_user_data:
-        icNumber = value[2]
-        phoneNumber = value[3]
-    try:
-        if Phone == phoneNumber and IC == icNumber:
-            print("Succesfully login!")
-            loginPage()
-        else:
-            print("Login failed. Please try again.")
-            login_func()
-    except UnboundLocalError:
-        print("Login failed. Please try again.")
-        login_func()
+        for value in retrieved_user_data:
+            icNumber = value[2]
+            phoneNumber = value[3]
+            userType = value[6]
+        try:
+            if Phone == phoneNumber and IC == icNumber and userType == "user":
+                print("Succesfully login!")
+                userPage()
+            else:
+                if input("Login failed. Try again(Y), Back(N) ").capitalize() == "Y":
+                    login_func(userOrAdmin)
+                else:
+                    welcome_func()
+        except UnboundLocalError: #catch execption when ic number and phone number not found in database
+            if input("Login failed. Try again(Y). Back(N) ").capitalize() == "Y":
+                login_func(userOrAdmin)
+            else:
+                welcome_func()
 
-def signup_func(): #signup page
-    print("Please key in the following details:")
-    name = input('Name: Capital Letters \n').title().strip()
-    age = input('Age: \n').strip()
-    ic= input('IC: No "-" E.g 0123456789 \n').strip()
-    phone = input('Phone number: E.g 6017890382 \n').strip()
-    postcode=int(input('Postcode: \n'))
-    address=input('Address: \n').strip()
+    def adminLogin(): #for admin to login
+        print("-"*50)
+        Phone = input('Enter your phone number: \n').strip()
+        IC = input('Enter your IC number: \n').strip()
+        
+        retrieved_user_data = myCursor.execute("SELECT * FROM userdata WHERE ic_number= :IC", {'IC':IC}) #to search the ic number inputted == with in the database or not
 
-    myCursor.execute("INSERT INTO userdata (user_name , user_age, ic_number, phone_number, post_code, home_address) VALUES (?, ?, ?, ?, ?, ?)", (name, age, ic, phone, postcode, address))
-    connection.commit()
-    print("New user successfully registered!")
+        for value in retrieved_user_data:
+            icNumber = value[2]
+            phoneNumber = value[3]
+            userType = value[6]
+        try:
+            if Phone == phoneNumber and IC == icNumber and userType == "admin":
+                print("Succesfully login!")
+                userPage()
+            else:
+                if input("Login failed. Try again(Y). Back(N) ").capitalize() == "Y":
+                    login_func(userOrAdmin)
+                else:
+                    welcome_func()
+        except UnboundLocalError: #catch execption when ic number and phone number not found in database
+            if input("Login failed. Try again(Y). Back(N) ").capitalize() == "Y":
+                login_func(userOrAdmin)
+            else:
+                welcome_func()
+
+    if userOrAdmin == 1:
+        userLogin()
+    else:
+        adminLogin()
+
+def signup_func(userOrAdmin): #signup page
+    def userSignup(): #sign up for user
+        print("Please key in the following details:")
+        name = input('Name: Capital Letters \n').title().strip()
+        age = input('Age: \n').strip()
+        ic= input('IC: No "-" E.g 0123456789 \n').strip()
+        phone = input('Phone number: E.g 6017890382 \n').strip()
+        postcode=int(input('Postcode: \n'))
+        address=input('Address: \n').strip()
+        userType = "user"
+
+        myCursor.execute("INSERT INTO userdata (user_name , user_age, ic_number, phone_number, post_code, home_address, user_type) VALUES (?, ?, ?, ?, ?, ?, ?)", (name, age, ic, phone, postcode, address, userType))
+        connection.commit()
+        print("New user successfully registered!")
+        userPage()
+
+    def adminSignup(): #sign up for admin
+        print("Please key in the following details:")
+        name = input('Name: Capital Letters \n').title().strip()
+        age = input('Age: \n').strip()
+        ic= input('IC: No "-" E.g 0123456789 \n').strip()
+        phone = input('Phone number: E.g 6017890382 \n').strip()
+        postcode=int(input('Postcode: \n'))
+        address=input('Address: \n').strip()
+        userType = "admin"
+
+        myCursor.execute("INSERT INTO userdata (user_name , user_age, ic_number, phone_number, post_code, home_address, user_type) VALUES (?, ?, ?, ?, ?, ?, ?)", (name, age, ic, phone, postcode, address, userType))
+        connection.commit()
+        print("New admin successfully registered!")
+        adminPage()
+
+    if userOrAdmin == 1:
+        userSignup()
+    else:
+        adminSignup()
 
 def welcome_func(): #so users have the option whether to login or register
-    print('What would you like to do?')
-    option = int(input("1- Login \n2- Register: \n"))
-    if option == 1:
-        login_func()
-    elif option == 2:
-        signup_func()
-    else:
-        welcome_func()
+    print("-"*50)
+    userOrAdmin = int(input("Are you a user or an admin? \n1- User \n2- Admin \n")) #to determine whether user or admin use this program
+    if userOrAdmin == 1:
+        print('What would you like to do?')
+        option = int(input("1- Login \n2- Register \n3- Exit: \n "))
+        if option == 1:
+            login_func(userOrAdmin)
+        elif option == 2:
+            signup_func(userOrAdmin)
+        elif option == 3:
+            exit()
+        else:
+            welcome_func()
+    elif userOrAdmin == 2:
+        print('What would you like to do?')
+        option = int(input("1- Login \n2- Register \n3- Exit: \n"))
+        if option == 1:
+            login_func(userOrAdmin)
+        elif option == 2:
+            signup_func(userOrAdmin)
+        elif option == 3:
+            exit()
+        else:
+            welcome_func()
 
 ########################################################### FUNCTIONS FOR WELCOMEPAGE #########################################################################
 
@@ -79,13 +155,73 @@ print('Welcome to MySejahtera!\n')
 ########################################################### WELCOMEPAGE #########################################################################
 ######### Hannah's part ##########
 
+
+
 ########## Hakeem's part ##########
-def loginPage():
+def userPage():
     print("this is login page")
+
+    print('_'*50)
+    print('1. Medical history \n2. COVID-19 Status \n3. View appoinment') 
+    print('_'*50)
+
+    n = int(input('>>>'))
+    print(f'Your choice is {n}')
 ########## Hakeem's part ##########
 
 ########## Nabilah's part ##########
-#nabilah, please type out your code here
+
+
+
+def viewAppointment():
+    pass
+def Questions():
+    print('Questions')
+    print('_'*50)
+
+    print('1. Are you exhibiting 2 or more symptoms as listed below? ')
+    print('- Fever')
+    print('- Chills')
+    print('- Shivering') 
+    print('- Body ache')
+    print('- Headache')
+    print('- Sore throat')
+    print('- Nausea or vomiting')
+    print('- Diarrhea')
+    print('- Fatigue')
+    print('- Runny nose or nasal congestion')
+    question1 = input('(Y/N)?: ')
+
+    print('2. Besides the above, are you exhibiting any of the symptoms listed below? ')
+    print('- Cough')
+    print('- Difficulty breathing')
+    print('- Loss of smell')
+    print('- Loss of taste')
+    question2 = input('(Y/N)?: ')
+
+    question3 = input('3. Have you attended any event/areas associated with known COCID-19 cluster(Y/N)?: ')
+    question4 = input('4. Have you travelled to any country outside Malaysia within 14 days before onset of symptoms(Y/N)?: ')
+    question5 = input('5. Have you had close contact to confirmed or suspected case of COVID-19 within 14 days before onset of illness(Y/N)?: ')
+    question6 = input('6. Are you a MOH COVID-19 volunteer in the last 14 days(Y/N)?: ')
+
+    print('_'*50)
+    print('1. Submit')
+    print('2. Cancel')
+    n = int(input('>>>'))
+    
+    if n == 1:
+        pass
+    elif n ==2:
+        pass
+    else:
+        print("Please enter a valid input.")
+        Questions()
+
+    print('COVID-19 Risk Status')
+    print('Low Risk')
+
+
+
 ########## Nabilah's part ##########
 
 ########## ajwad's part ###########   
@@ -103,7 +239,7 @@ def createVaccinationCenter():
     connection.commit()
 
     print("Vaccination center has been registered succesfully")
-    whatToDo()
+    adminPage()
   
 def deleteUser():
     IC = input("Please enter the user IC: ")
@@ -119,7 +255,7 @@ def sortList():
     def exit():
                 exitToAdminMenu = input("Press Q to close and go to admin menu: ").capitalize()
                 if exitToAdminMenu == "Q":
-                    whatToDo()
+                    adminPage()
                 else:
                     exit()
 
@@ -154,7 +290,7 @@ def sortList():
         print("Please enter a valid option.")
         sortList()
 
-def whatToDo():
+def adminPage():
     print("Welcome admin! What do you want to do? \n1- create vaccination center \n2- update user information \n3- assign appointment for user \n4- sort list of users \n5- logout \n6- exit")
     userInput = int(input())
 
@@ -172,7 +308,7 @@ def whatToDo():
         exit()
     else:
         print("Please enter a valid option.")
-        whatToDo()
+        adminPage()
 
 ########## ajwad's part ########### 
 
