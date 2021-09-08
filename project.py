@@ -5,15 +5,15 @@
 # Trimester: 2110
 # Year: 2021/22 Trimester 1
 # Member_1: 1211103139 | HANNAH SOFEA BINTI ROSLEE | 1211103139@student.mmu.edu.my | +60123616790
-# Member_2: 1211103128 | MUHAMMAD AJWAD BIN MOHAMAD A'SIM | 1211103128@student.mmu.edu.my | +601154261979
+# Member_2: ID | NAME | EMAIL | PHONES
 # Member_3: 1211103138 | NURUL NABILAH BINTI MOHD NOOR HAKIM | 1211103138@student.mmu.edu.my | +60132027946
-# Member_4: ID | NAME | EMAIL | PHONES
+# Member_4: 1211103128 | MUHAMMAD AJWAD BIN MOHAMAD A'SIM | 1211103128@student.mmu.edu.my | +601154261979
 # *********************************************************
 # Task Distribution
 # Member_1:Account sign up & login authentication
-# Member_2:Administrator assign appointment,create vaccination center & generate list
+# Member_2:Menu and result display
 # Member_3:Public user update information & view appointment
-# Member_4:
+# Member_4:Administrator assign appointment,create vaccination center & generate list
 # *********************************************************
 
 import sqlite3
@@ -40,7 +40,7 @@ def login_func(userOrAdmin): #login page
         try:
             if Phone == phoneNumber and IC == icNumber and userType == "user":
                 print("Succesfully login!")
-                userPage()
+                userPage(IC)
             else:
                 if input("Login failed. Try again(Y), Back(N) ").capitalize() == "Y":
                     login_func(userOrAdmin)
@@ -66,7 +66,7 @@ def login_func(userOrAdmin): #login page
         try:
             if Phone == phoneNumber and IC == icNumber and userType == "admin":
                 print("Succesfully login!")
-                userPage()
+                adminPage()
             else:
                 if input("Login failed. Try again(Y). Back(N) ").capitalize() == "Y":
                     login_func(userOrAdmin)
@@ -97,7 +97,7 @@ def signup_func(userOrAdmin): #signup page
         myCursor.execute("INSERT INTO userdata (user_name , user_age, ic_number, phone_number, post_code, home_address, user_type) VALUES (?, ?, ?, ?, ?, ?, ?)", (name, age, ic, phone, postcode, address, userType))
         connection.commit()
         print("New user successfully registered!")
-        userPage()
+        userPage(ic)
 
     def adminSignup(): #sign up for admin
         print("Please key in the following details:")
@@ -121,20 +121,14 @@ def signup_func(userOrAdmin): #signup page
 
 def welcome_func(): #so users have the option whether to login or register
     print("-"*50)
-    userOrAdmin = int(input("Are you a user or an admin? \n1- User \n2- Admin \n")) #to determine whether user or admin use this program
-    if userOrAdmin == 1:
-        print('What would you like to do?')
-        option = int(input("1- Login \n2- Register \n3- Exit: \n "))
-        if option == 1:
-            login_func(userOrAdmin)
-        elif option == 2:
-            signup_func(userOrAdmin)
-        elif option == 3:
-            exit()
-        else:
-            welcome_func()
-    elif userOrAdmin == 2:
-        print('What would you like to do?')
+    try:
+        userOrAdmin = int(input("Are you a user or an admin? \n1- User \n2- Admin \n")) #to determine whether user or admin use this program
+    except ValueError:
+        print("Please enter a valid option.")
+        welcome_func()
+
+    print('What would you like to do?')
+    try:
         option = int(input("1- Login \n2- Register \n3- Exit: \n"))
         if option == 1:
             login_func(userOrAdmin)
@@ -144,6 +138,10 @@ def welcome_func(): #so users have the option whether to login or register
             exit()
         else:
             welcome_func()
+    except ValueError:
+        print("Please enter a valid option.")
+        welcome_func()
+    
 
 ########################################################### FUNCTIONS FOR WELCOMEPAGE #########################################################################
 
@@ -158,26 +156,45 @@ print('Welcome to MySejahtera!\n')
 
 
 ########## Hakeem's part ##########
-def userPage():
-    print("this is login page")
+def userPage(ic): #user will be redirected here after signed up / logged in hakeem can view anything
 
     print('_'*50)
-    print('1. Medical history \n2. COVID-19 Status \n3. View appoinment') 
+    print('1. COVID-19 Status \n2. View appoinment \n3. Logout') 
     print('_'*50)
 
-    n = int(input('>>>'))
-    print(f'Your choice is {n}')
+    def AppointmentPreferred(): #to ask people what day they prefer to get vaccinated/ where/ when
+        preferredDate = input("What date do you prefer to have your appointment? (dd/mm): ").strip()
+        preferredLocation = input("Where do you prefer to get vaccinated? ")
+    n = int(input())
+    if n == 1:
+        Questions(ic)
+    elif n == 2: 
+        viewAppointment(ic)
+    elif n == 3:
+        welcome_func()
+    else:
+        print("Please enter a valid option.")
+        userPage(ic)
+    
 ########## Hakeem's part ##########
 
 ########## Nabilah's part ##########
 
+def viewAppointment(ic): #to view appointment
+    for value in myCursor.execute("SELECT vaccination_date, vaccination_time, vaccination_venue FROM userdata WHERE ic_number = :IC", {'IC':ic}):
+            vaccinationDate = value[0]
+            vaccinationTime = value[1]
+            vaccinationVenue = value[2]
+    
+    if vaccinationDate != None and vaccinationTime != None and vaccinationVenue != None:
+        print(f"Your appointment is on {vaccinationDate}, {vaccinationTime} at the {vaccinationVenue}.")
+    else:
+        print("You have no appointment yet.")
+        userPage(ic)
 
-
-def viewAppointment():
-    pass
-def Questions():
+def Questions(ic):
     print('Questions')
-    print('_'*50)
+    print('-'*50)
 
     print('1. Are you exhibiting 2 or more symptoms as listed below? ')
     print('- Fever')
@@ -190,35 +207,50 @@ def Questions():
     print('- Diarrhea')
     print('- Fatigue')
     print('- Runny nose or nasal congestion')
-    question1 = input('(Y/N)?: ')
+    question1 = input('(Y/N)?: ').capitalize()
 
     print('2. Besides the above, are you exhibiting any of the symptoms listed below? ')
     print('- Cough')
     print('- Difficulty breathing')
     print('- Loss of smell')
     print('- Loss of taste')
-    question2 = input('(Y/N)?: ')
+    question2 = input('(Y/N)?: ').capitalize()
 
-    question3 = input('3. Have you attended any event/areas associated with known COCID-19 cluster(Y/N)?: ')
-    question4 = input('4. Have you travelled to any country outside Malaysia within 14 days before onset of symptoms(Y/N)?: ')
-    question5 = input('5. Have you had close contact to confirmed or suspected case of COVID-19 within 14 days before onset of illness(Y/N)?: ')
-    question6 = input('6. Are you a MOH COVID-19 volunteer in the last 14 days(Y/N)?: ')
+    question3 = input('3. Have you attended any event/areas associated with known COCID-19 cluster(Y/N)?: ').capitalize()
+    question4 = input('4. Have you travelled to any country outside Malaysia within 14 days before onset of symptoms(Y/N)?: ').capitalize()
+    question5 = input('5. Have you had close contact to confirmed or suspected case of COVID-19 within 14 days before onset of illness(Y/N)?: ').capitalize()
+    question6 = input('6. Are you a MOH COVID-19 volunteer in the last 14 days(Y/N)?: ').capitalize()
 
-    print('_'*50)
+    print('-'*50)
     print('1. Submit')
     print('2. Cancel')
-    n = int(input('>>>'))
+    n = int(input())
     
     if n == 1:
-        pass
+        priority = 0
+        if question1 == "Y":
+            priority += 1
+        if question2 == "Y":
+            priority += 1
+        if question3 == "Y":
+            priority += 1
+        if question4 == "Y":
+            priority += 1
+        if question5 == "Y":
+            priority += 1
+        if question6 == "Y":
+            priority += 1
+
+        myCursor.execute("UPDATE userdata SET priority = :priority WHERE ic_number = :ic", {'priority':priority, 'ic':ic})
+        connection.commit()
+        print("COVID-19 status updated! ")
+        userPage(ic)
     elif n ==2:
-        pass
+        userPage(ic)
     else:
         print("Please enter a valid input.")
-        Questions()
+        Questions(ic)
 
-    print('COVID-19 Risk Status')
-    print('Low Risk')
 
 
 
