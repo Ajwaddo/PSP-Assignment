@@ -83,7 +83,7 @@ print('Welcome to MySejahtera!\n')
 ########## Hakeem's part ##########
 
 ########## Nabilah's part ##########
-#nabilah, please type out your code here
+print("Hello world")
 ########## Nabilah's part ##########
 
 ########## ajwad's part ###########    
