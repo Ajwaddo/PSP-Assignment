@@ -241,7 +241,7 @@ def Questions(ic):
         if question6 == "Y":
             priority += 1
 
-        myCursor.execute("UPDATE userdata SET priority = :priority WHERE ic_number = :ic", {'priority':priority, 'ic':ic})
+        myCursor.execute("UPDATE userdata SET priority = :priority, q1 = :q1, q2 = :q2, q3 = :q3, q4 = :q4, q5 = :q5, q6 = :q6, WHERE ic_number = :ic", {'priority':priority, 'ic':ic})
         connection.commit()
         print("COVID-19 status updated! ")
         userPage(ic)
@@ -267,7 +267,7 @@ def createVaccinationCenter():
     VCCAPACITYDAY = int(input("Please enter the capacity per day: "))
 
     #insert data to database
-    myCursor.execute("INSERT INTO vaccinationCenters (name, postcode, address, capacityHour, capacityDay), (?, ?, ?, ?, ?)", (VCNAME, VCPOSTCODE, VCADDRESS, VCCAPACITYHOUR, VCCAPACITYDAY))
+    myCursor.execute("INSERT INTO vaccinationCenters (name, postcode, address, capacityHour, capacityDay) VALUES (?, ?, ?, ?, ?)", (VCNAME, VCPOSTCODE, VCADDRESS, VCCAPACITYHOUR, VCCAPACITYDAY))
     connection.commit()
 
     print("Vaccination center has been registered succesfully")
@@ -280,8 +280,17 @@ def deleteUser():
     print("User deleted.")
 
 def assignAppointment():
-    pass
+    print("User without appointment date: ")
+    for user in myCursor.execute("SELECT rowid, * FROM userdata"): #search user without appointment
+        if user[15] == None:
+            print(f'ID: {user[0]} | IC number: {user[2]} | Appointment date: {user[15]}')
+    print("-"*50)
 
+    selectUser = int(input("Enter the user ID: "))
+    for val in myCursor.execute("SELECT rowid, * FROM vaccinationCenters"):
+        print(f"ID: {val[0]} | Vaccination center name: {val[1]} | Address: {val[3]} | Postcode: {val[2]} | Capacity per hour: {val[4]} | Capacity per day: {val[5]}", )
+    
+    
 def sortList():
     #choose to sort list by what
     def exit():
@@ -344,6 +353,6 @@ def adminPage():
 
 ########## ajwad's part ########### 
 
-welcome_func()
+assignAppointment()
 
 
