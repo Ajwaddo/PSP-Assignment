@@ -353,6 +353,6 @@ def adminPage():
 
 ########## ajwad's part ########### 
 
-assignAppointment()
+welcome_func()
 
 
