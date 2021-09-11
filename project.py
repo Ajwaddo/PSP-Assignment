@@ -202,6 +202,7 @@ def main():
         #ViewAppointment(ic)
     else:
         welcome_func()
+main()
 
 
 
