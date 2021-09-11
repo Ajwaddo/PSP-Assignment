@@ -241,7 +241,7 @@ def Questions(ic):
         if question6 == "Y":
             priority += 1
 
-        myCursor.execute("UPDATE userdata SET priority = :priority, q1 = :q1, q2 = :q2, q3 = :q3, q4 = :q4, q5 = :q5, q6 = :q6, WHERE ic_number = :ic", {'priority':priority, 'ic':ic})
+        myCursor.execute("UPDATE userdata SET priority = :priority, q1 = :q1, q2 = :q2, q3 = :q3, q4 = :q4, q5 = :q5, q6 = :q6 WHERE ic_number = :ic", {'priority':priority, 'q1':question1, 'q2':question2, 'q3':question3, 'q4':question4, 'q5':question5, 'q6':question6,'ic':ic})
         connection.commit()
         print("COVID-19 status updated! ")
         userPage(ic)
