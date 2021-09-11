@@ -384,7 +384,7 @@ def ViewAppointment(ic): #to view appointment
     else:
         print("You have no appointment yet.")
         userPage(ic)
-ViewAppointment()
+
 
 ########## Nabilah's part ##########
 
