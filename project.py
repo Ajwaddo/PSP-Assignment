@@ -191,20 +191,18 @@ def main():
     print('4. Log out')
     print('_'*50)
     print()
-    while True:
-        print()
-        userChoice = input("Choose An Option: ")
-        if userChoice in ['1','2','3','4']:
-            break
-        if userChoice == '1':
-            Vaccination()
-        elif userChoice == '2':
-            COVID19Status()
-        elif userChoice == '3': 
-            ViewAppointment()
-        else:
-            welcome_func()
-main()
+        
+    userChoice = input("Choose An Option: ")
+    if userChoice == '1':
+        Vaccination()
+    elif userChoice == '2':
+        COVID19Status()
+    elif userChoice == '3': 
+        pass
+        #ViewAppointment(ic)
+    else:
+        welcome_func()
+
 
 
 def Vaccination():   
@@ -289,10 +287,6 @@ def Vaccination():
                 print(f'You are NOT ELIGIBLE for vaccine yet')
             else:
                 print(f'You are NOT ELIGIBLE for vaccine yet')
-                
-Vaccination()
-
-main()
 
 def COVID19Status():
     print('1. Are you exhibiting 2 or more symptoms as listed below? ')
@@ -373,9 +367,6 @@ def COVID19Status():
         else:
             print("Please enter a valid input.")
             COVID19Status()
-
-COVID19Status()
-main()
 
 def ViewAppointment(ic): #to view appointment
     for value in myCursor.execute("SELECT vaccination_date, vaccination_time, vaccination_venue FROM userdata WHERE ic_number = :IC", {'IC':ic}):
@@ -487,7 +478,6 @@ def adminPage():
         adminPage()
 
 ########## ajwad's part ########### 
-
-welcome_func()
+main()
 
 
