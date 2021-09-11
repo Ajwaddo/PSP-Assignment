@@ -353,7 +353,7 @@ def adminPage():
 
 ########## ajwad's part ########### 
 
-#welcome_func()
-adminPage()
+welcome_func()
+
 
 
