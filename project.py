@@ -167,7 +167,7 @@ def userPage(ic): #user will be redirected here after signed up / logged in hake
         preferredLocation = input("Where do you prefer to get vaccinated? ")
     n = int(input())
     if n == 1:
-        Questions(ic)
+        pass
     elif n == 2: 
         viewAppointment(ic)
     elif n == 3:
@@ -192,10 +192,118 @@ def viewAppointment(ic): #to view appointment
         print("You have no appointment yet.")
         userPage(ic)
 
-def Questions(ic):
-    print('Questions')
-    print('-'*50)
+def main():
+    print('_'*50)
+    print("PUBLIC USER UPDATE INFORMATION")
+    print('_'*50)
+    print() 
+    print('1. Vaccination')
+    print('2. COVID-19 Status') 
+    print('3. View appoinment')
+    print('_'*50)
+    print()
+    while True:
+        print()
+        userChoice = input("Choose An Option: ")
+        if userChoice in ['1','2','3']:
+            break
+        if userChoice == '1':
+            print('Vaccination()')
+        elif userChoice == '2':
+            print('COVID19Status()')
+        else: 
+            print('ViewAppoiment()')
+main()
 
+
+def Vaccination():   
+    print('1. Are you interested to take the COVID-19 vaccine? ')
+    q1 = input('("Y/N"):')
+
+    print('2. Are you have any illnesses? ')
+    q2 = input('("Y/N")?: ')
+
+    if q2 == "Y" or q2 == "y":
+        e = input("Enter your illnesses: ")
+    
+    elif q2 == "N" or q2 == "n":
+        pass
+
+    print('3. Are you registered with the department of Social Welfare Malaysia as a Disabled Person (OKU)? ')
+    q3 = input('("Y/N"):')
+
+    print('4. Are you currently pregnant?' )
+    q4 = input('("Y/N"):')
+
+    print('5. Are you currently breastfeeding?' )
+    q5 = input('("Y/N"):')
+        
+    print('6. Are you a frontliner?' )
+    q6 = input('("Y/N:")?: ')
+
+    print('7. What is your occupation?' )
+    print('1- Health-care worker')
+    print('2- Community Services; Energy, Food, Transportation')
+    print('3- Workers')
+    print('4- Students')
+    print('5- Else')
+    while True:
+        print()
+        userChoice = input("Choose An Option: ")
+        if userChoice in ['1','2','3','4','5']:
+            break
+        if userChoice == '1':
+            print('Health-care worker() ')
+        elif userChoice == '2':
+            print('Community Services; Energy, Food, Transportation() ')
+        elif userChoice == '3':
+            print('Workers() ')
+        elif userChoice == '4':
+            print('Students() ')
+        elif userChoice == '5':
+            occupation = input("Enter your Occupation: ")
+            print(f'{occupation} ')
+        else:
+            pass
+
+    print('-'*50)
+    print('1. Submit')
+    print('2. Cancel')
+    n = int(input())
+
+    priority = 0 #to declare variable priority
+    #to check whether the user answer Y / N
+    if n == 1:
+
+        priority = 0
+        if q1 == "Y" or q1 == "y":
+            priority += 1
+        if q2 == "Y" or q2 == "y":
+            priority += 1
+        if q3 == "Y" or q3 == "y":
+            priority += 1
+        if q4 == "Y" or q4 == "y":
+            priority += 1
+        if q5 == "Y" or q5 == "y":
+            priority += 1
+        if q6 == "Y" or q6 == "y":
+            priority += 1
+        if userChoice in ['1','2','3','4','5']:
+            priority += 1
+
+            if priority>3:
+                print(f'You are ELIGIBLE for vaccine')
+                print('View Appoinment')
+            elif priority<3:
+                print(f'You are NOT ELIGIBLE for vaccine yet')
+            else:
+                print(f'You are NOT ELIGIBLE for vaccine yet')
+                
+Vaccination()
+
+main()
+
+def COVID19Status():
     print('1. Are you exhibiting 2 or more symptoms as listed below? ')
     print('- Fever')
     print('- Chills')
@@ -204,52 +312,84 @@ def Questions(ic):
     print('- Headache')
     print('- Sore throat')
     print('- Nausea or vomiting')
-    print('- Diarrhea')
+    print('- Diarrhea') 
     print('- Fatigue')
     print('- Runny nose or nasal congestion')
-    question1 = input('(Y/N)?: ').capitalize()
+    q1 = input('("Y/N")?: ').strip().capitalize()
 
     print('2. Besides the above, are you exhibiting any of the symptoms listed below? ')
     print('- Cough')
     print('- Difficulty breathing')
     print('- Loss of smell')
     print('- Loss of taste')
-    question2 = input('(Y/N)?: ').capitalize()
+    q2 = input('("Y/N:")?: ').strip().capitalize()
 
-    question3 = input('3. Have you attended any event/areas associated with known COCID-19 cluster(Y/N)?: ').capitalize()
-    question4 = input('4. Have you travelled to any country outside Malaysia within 14 days before onset of symptoms(Y/N)?: ').capitalize()
-    question5 = input('5. Have you had close contact to confirmed or suspected case of COVID-19 within 14 days before onset of illness(Y/N)?: ').capitalize()
-    question6 = input('6. Are you a MOH COVID-19 volunteer in the last 14 days(Y/N)?: ').capitalize()
+    print('3. Are you immunocompromised or have health conditions such as; ')
+    print('- Chronic Respiratory Diseases')
+    print('- Chronic Kidney Diseases')
+    print('- Cardiovascular Diseases')
+    print('- Chronic Lung Diseases')
+    print('- Hyper-tension')
+    print('- Diabetes')
+    print('- Obesity')
+    print('- Asthma')
+    print('- Cancer')
+    q3 = input('("Y/N")?: ').strip().capitalize()
+
+    q4 = input('4. Have you attended any event/areas associated with known COCID-19 cluster("Y/N:")?: ').strip().capitalize()
+    q5 = input('5. Have you travelled to any country outside Malaysia within 14 days before onset of symptoms("Y/N")?: ').strip().capitalize()
+    q6 = input('6. Have you had close contact to confirmed or suspected case of COVID-19 within 14 days before onset of illness("Y/N")?: ').strip().capitalize()
+    q7 = input('7. Are you a MOH COVID-19 volunteer in the last 14 days("Y/N")?: ').strip().capitalize()
 
     print('-'*50)
     print('1. Submit')
     print('2. Cancel')
     n = int(input())
-    
+
+    priority = 0 #to declare variable priority
+        #to check whether the user answer Y / N
     if n == 1:
+
         priority = 0
-        if question1 == "Y":
+
+        if q1 == "Y" or q1 == "y":
             priority += 1
-        if question2 == "Y":
+        if q2 == "Y" or q2 == "y":
             priority += 1
-        if question3 == "Y":
+        if q3 == "Y" or q3 == "y":
             priority += 1
-        if question4 == "Y":
+        if q4 == "Y" or q4 == "y":
             priority += 1
-        if question5 == "Y":
+        if q5 == "Y" or q5 == "y":
             priority += 1
-        if question6 == "Y":
+        if q6 == "Y" or q6 == "y":
+            priority += 1
+        if q7 == "Y" or q7 == "y":
             priority += 1
 
-        myCursor.execute("UPDATE userdata SET priority = :priority, q1 = :q1, q2 = :q2, q3 = :q3, q4 = :q4, q5 = :q5, q6 = :q6, WHERE ic_number = :ic", {'priority':priority, 'ic':ic})
-        connection.commit()
-        print("COVID-19 status updated! ")
-        userPage(ic)
-    elif n ==2:
-        userPage(ic)
-    else:
-        print("Please enter a valid input.")
-        Questions(ic)
+            if priority>3:
+                print(f'Covid-19 Risk Status = High Risk')
+                print('You are UNDER QUARANTINE')
+            elif priority<3:
+                print(f'Covid-19 Risk Status = Low Risk')
+                print('You are NORMAL')
+            else:
+                print(f'Covid-19 Risk Status = High Risk')
+                print('You are UNDER QUARANTINE')
+
+        elif n == 2:
+             main()
+        else:
+            print("Please enter a valid input.")
+            COVID19Status()
+
+COVID19Status()
+main()
+
+
+def ViewAppointment():
+    pass
+
 
 
 
