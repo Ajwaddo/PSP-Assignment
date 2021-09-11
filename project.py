@@ -180,32 +180,6 @@ def userPage(ic): #user will be redirected here after signed up / logged in hake
 
 ########## Nabilah's part ##########
 
-def main():
-    print('_'*50)
-    print("PUBLIC USER UPDATE INFORMATION")
-    print('_'*50)
-    print() 
-    print('1. Vaccination')
-    print('2. COVID-19 Status') 
-    print('3. View appoinment')
-    print('4. Log out')
-    print('_'*50)
-    print()
-        
-    userChoice = input("Choose An Option: ")
-    if userChoice == '1':
-        Vaccination()
-    elif userChoice == '2':
-        COVID19Status()
-    elif userChoice == '3': 
-        pass
-        #ViewAppointment(ic)
-    else:
-        welcome_func()
-main()
-
-
-
 def Vaccination():   
     print('1. Are you interested to take the COVID-19 vaccine? ')
     q1 = input('("Y/N"):')
@@ -264,7 +238,6 @@ def Vaccination():
     priority = 0 #to declare variable priority
     #to check whether the user answer Y / N
     if n == 1:
-
         priority = 0
         if q1 == "Y" or q1 == "y":
             priority += 1
@@ -281,17 +254,17 @@ def Vaccination():
         if userChoice in ['1','2','3','4','5']:
             priority += 1
 
-            if priority>3:
-                print(f'You are ELIGIBLE for vaccine')
-                print('View Appoinment')
-            elif priority<3:
-                print(f'You are NOT ELIGIBLE for vaccine yet')
-            else:
-                print(f'You are NOT ELIGIBLE for vaccine yet')
-
+        if priority>3:
+            print(f'You are ELIGIBLE for vaccine')
+            print('View Appoinment')
+        elif priority<3:
+            print(f'You are NOT ELIGIBLE for vaccine yet')
+        else:
+            print(f'You are NOT ELIGIBLE for vaccine yet')
+        
+        main()
     elif n == 2:
         main()
-Vaccination()
 
 def COVID19Status():
     print('1. Are you exhibiting 2 or more symptoms as listed below? ')
@@ -339,7 +312,6 @@ def COVID19Status():
     priority = 0 #to declare variable priority
         #to check whether the user answer Y / N
     if n == 1:
-
         priority = 0
 
         if q1 == "Y" or q1 == "y":
@@ -357,21 +329,20 @@ def COVID19Status():
         if q7 == "Y" or q7 == "y":
             priority += 1
 
-            if priority>3:
-                print(f'Covid-19 Risk Status = High Risk')
-                print('You are UNDER QUARANTINE')
-            elif priority<3:
-                print(f'Covid-19 Risk Status = Low Risk')
-                print('You are NORMAL')
-            else:
-                print(f'Covid-19 Risk Status = High Risk')
-                print('You are UNDER QUARANTINE')
-
+        if priority>3:
+            print(f'Covid-19 Risk Status = High Risk')
+            print('You are UNDER QUARANTINE')
+        elif priority<3:
+            print(f'Covid-19 Risk Status = Low Risk')
+            print('You are NORMAL')
+        else:
+            print(f'Covid-19 Risk Status = High Risk')
+            print('You are UNDER QUARANTINE')
+        main()
     elif n == 2:
         main()
     else:
         print("Please enter a valid input.")
-COVID19Status()
 
 def ViewAppointment(ic): #to view appointment
     for value in myCursor.execute("SELECT vaccination_date, vaccination_time, vaccination_venue FROM userdata WHERE ic_number = :IC", {'IC':ic}):
@@ -385,7 +356,29 @@ def ViewAppointment(ic): #to view appointment
         print("You have no appointment yet.")
         userPage(ic)
 
-
+def main():
+    print('_'*50)
+    print("PUBLIC USER UPDATE INFORMATION")
+    print('_'*50)
+    print() 
+    print('1. Vaccination')
+    print('2. COVID-19 Status') 
+    print('3. View appoinment')
+    print('4. Log out')
+    print('_'*50)
+    print()
+        
+    userChoice = input("Choose An Option: ")
+    if userChoice == '1':
+        Vaccination()
+    elif userChoice == '2':
+        COVID19Status()
+    elif userChoice == '3': 
+        pass
+        #ViewAppointment(ic)
+    else:
+        welcome_func()
+    main()
 ########## Nabilah's part ##########
 
 ########## ajwad's part ###########   
