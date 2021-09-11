@@ -169,7 +169,7 @@ def userPage(ic): #user will be redirected here after signed up / logged in hake
     if n == 1:
         pass
     elif n == 2: 
-        viewAppointment(ic)
+        ViewAppointment(ic)
     elif n == 3:
         welcome_func()
     else:
@@ -179,18 +179,6 @@ def userPage(ic): #user will be redirected here after signed up / logged in hake
 ########## Hakeem's part ##########
 
 ########## Nabilah's part ##########
-
-def viewAppointment(ic): #to view appointment
-    for value in myCursor.execute("SELECT vaccination_date, vaccination_time, vaccination_venue FROM userdata WHERE ic_number = :IC", {'IC':ic}):
-            vaccinationDate = value[0]
-            vaccinationTime = value[1]
-            vaccinationVenue = value[2]
-    
-    if vaccinationDate != None and vaccinationTime != None and vaccinationVenue != None:
-        print(f"Your appointment is on {vaccinationDate}, {vaccinationTime} at the {vaccinationVenue}.")
-    else:
-        print("You have no appointment yet.")
-        userPage(ic)
 
 def main():
     print('_'*50)
@@ -386,9 +374,17 @@ def COVID19Status():
 COVID19Status()
 main()
 
-
-def ViewAppointment():
-    pass
+def ViewAppointment(ic): #to view appointment
+    for value in myCursor.execute("SELECT vaccination_date, vaccination_time, vaccination_venue FROM userdata WHERE ic_number = :IC", {'IC':ic}):
+            vaccinationDate = value[0]
+            vaccinationTime = value[1]
+            vaccinationVenue = value[2]
+    
+    if vaccinationDate != None and vaccinationTime != None and vaccinationVenue != None:
+        print(f"Your appointment is on {vaccinationDate}, {vaccinationTime} at the {vaccinationVenue}.")
+    else:
+        print("You have no appointment yet.")
+        userPage(ic)
 
 
 
