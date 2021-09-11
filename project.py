@@ -288,6 +288,10 @@ def Vaccination():
             else:
                 print(f'You are NOT ELIGIBLE for vaccine yet')
 
+    elif n == 2:
+        main()
+Vaccination()
+
 def COVID19Status():
     print('1. Are you exhibiting 2 or more symptoms as listed below? ')
     print('- Fever')
@@ -362,11 +366,11 @@ def COVID19Status():
                 print(f'Covid-19 Risk Status = High Risk')
                 print('You are UNDER QUARANTINE')
 
-        elif n == 2:
-             main()
-        else:
-            print("Please enter a valid input.")
-            COVID19Status()
+    elif n == 2:
+        main()
+    else:
+        print("Please enter a valid input.")
+COVID19Status()
 
 def ViewAppointment(ic): #to view appointment
     for value in myCursor.execute("SELECT vaccination_date, vaccination_time, vaccination_venue FROM userdata WHERE ic_number = :IC", {'IC':ic}):
@@ -379,6 +383,7 @@ def ViewAppointment(ic): #to view appointment
     else:
         print("You have no appointment yet.")
         userPage(ic)
+ViewAppointment()
 
 ########## Nabilah's part ##########
 
