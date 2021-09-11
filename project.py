@@ -188,19 +188,22 @@ def main():
     print('1. Vaccination')
     print('2. COVID-19 Status') 
     print('3. View appoinment')
+    print('4. Log out')
     print('_'*50)
     print()
     while True:
         print()
         userChoice = input("Choose An Option: ")
-        if userChoice in ['1','2','3']:
+        if userChoice in ['1','2','3','4']:
             break
         if userChoice == '1':
-            print('Vaccination()')
+            Vaccination()
         elif userChoice == '2':
-            print('COVID19Status()')
-        else: 
-            print('ViewAppoiment()')
+            COVID19Status()
+        elif userChoice == '3': 
+            ViewAppointment()
+        else:
+            welcome_func()
 main()
 
 
@@ -385,10 +388,6 @@ def ViewAppointment(ic): #to view appointment
     else:
         print("You have no appointment yet.")
         userPage(ic)
-
-
-
-
 
 ########## Nabilah's part ##########
 
