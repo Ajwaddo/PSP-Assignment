@@ -149,7 +149,14 @@ print('Welcome to MySejahtera!\n')
 ######### Hannah's part ##########
 
 ########## Hakeem's part ##########
+def rsvp(user): #questions about appointment confirmation
+    print('1. Are you confirm to take the COVID-19 vaccine at the date given')
+    q1 = input('("Y/N"):')
 
+    if q1 == "Y" or q1 == "n":
+         print("Thank you for your answer")
+    elif q1 == "N" or q1 == "n":
+        print("do you want to apply new appointment")
 ########## Hakeem's part ##########
 
 ########## Nabilah's part ##########
