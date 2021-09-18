@@ -20,7 +20,7 @@ import sqlite3
 from operator import itemgetter
 connection = sqlite3.connect('user.db')
 myCursor = connection.cursor()
-#in user.db, it has one table(userdata) that contains([0]rowid int, [1]user_name text, [2]user_age int, ic_number text, phone_number text, post_code int, home_address text, user_type text, q1_1 text, q1_2 text, q1_3 text, q1_4 text, q1_5 text, q1_6 text, q1_7 text, q2_1 text, q2_2 text, q2_3 text, q2_4 text, q2_5 text, q2_6 text, q2_7 text, priority int, vaccination_date text, vaccination_time text, vaccination_venue text) 
+#in user.db, it has one table(userdata) that contains(rowid int, user_name text, user_age int, ic_number text, phone_number text, post_code int, home_address text, user_type text, q1_1 text, q1_2 text, q1_3 text, q1_4 text, q1_5 text, q1_6 text, q1_7 text, q2_1 text, q2_2 text, q2_3 text, q2_4 text, q2_5 text, q2_6 text, q2_7 text, priority int, vaccination_date text, vaccination_time text, vaccination_venue text) 
 
 myCursor.execute("SELECT rowid, * FROM userdata") #query all data from userdata table
 listUser = myCursor.fetchall() #store all data in database into a tuple list listUser
@@ -53,8 +53,7 @@ def login_func(): #login page
         while True:
             if Phone == phoneNumber and IC == icNumber and userType == "user":
                 print("Succesfully login!")
-                #mainMenu(IC) #go to user main menu
-                displayMenu(Phone, IC)
+                mainMenu(IC) #go to user main menu
             else:
                 loginFailed()
         
@@ -71,7 +70,7 @@ def login_func(): #login page
         while True:
             if Phone == phoneNumber and IC == icNumber and userType == "admin":
                 print("Succesfully login!")
-                adminPage(IC) #go to admin main menu
+                mainMenu(IC) #go to user main menu
             else:
                 loginFailed()
     
@@ -150,15 +149,14 @@ print('Welcome to MySejahtera!\n')
 ######### Hannah's part ##########
 
 ########## Hakeem's part ##########
-def rsvp():
-    preferredDate = input("Please enter your preferred appointment date(dd/mm/yyyy): ")
-    yesOrNo = input("Are you free during this appointmne date? (Y/N): ")
-    
-def displayMenu(phoneNumber, ic):
-    for value in listUser:
-        username = value[1]
-        age = value[2]
+def rsvp(user): #questions about appointment confirmation
+    print('1. Are you confirm to take the COVID-19 vaccine at the date given')
+    q1 = input('("Y/N"):')
 
+    if q1 == "Y" or q1 == "n":
+         print("Thank you for your answer")
+    elif q1 == "N" or q1 == "n":
+        print("do you want to apply new appointment")
 ########## Hakeem's part ##########
 
 ########## Nabilah's part ##########
