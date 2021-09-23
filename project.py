@@ -393,26 +393,32 @@ def deleteUser(): #to delete user
     adminPage()
 
 def assignAppointment(): #to assign appointment
-    print("User without appointment date: ")
+    print("User without appointment date: \n")
 
     for value in listUser: #show user without appointment
         userID = value[0]
         username = value[1]
         appointmentDate = value[24]
-        print(f"userID: {userID} | username: {username} | appointment date: {appointmentDate}")
+        print(f"user ID: {userID} | username: {username} | appointment date: {appointmentDate}")
     print("-"*50)
-    for value in listVaccinationCenters: #show vaccination center
-        centerID = value[0]
-        print(value)
+    print("Vaccination Center: \n")
+    for value in listVaccinationCenters: #show vaccination center's row id, name, and postcode
+        print(f"Vaccination center ID: {value[0]} | Name: {value[1]} | Postcode: {value[2]}")
+    print("-"*50)
 
     selectUser = int(input("Enter the user ID: "))
     newAppointmentDate = input("Please enter the appointment date (dd/mm/yyyy): ")
     newAppointmentTime = input("Please enter the appointment time (24-hour): ")
-    newAppointmentVenue = int(input("Please enter the vaccination center name: "))
+    newAppointmentVenueID = int(input("Please enter the vaccination center ID: "))
 
+    myCursor.execute("SELECT name FROM vaccinationCenters WHERE rowid = :newAppointmentVenueID", {"newAppointmentVenueID":newAppointmentVenueID})
+    newAppointmentVenue = myCursor.fetchone()
+    for value in newAppointmentVenue:
+        centerName = value
+    
     #update into database
-    myCursor.execute("UPDATE userdata SET appointmentDate = :newAppointmentDate, appointmentTime = :newAppointmentTime, appointmentVenue = :newAppointmentVenue WHERE rowid = :selectUser", 
-    {'newAppointmentDate':newAppointmentDate, 'newAppointmentTime':newAppointmentTime, 'newAppointmentVenue':newAppointmentVenue, 'selectUser':selectUser})
+    myCursor.execute("UPDATE userdata SET vaccination_date = :newAppointmentDate, vaccination_time = :newAppointmentTime, vaccination_venue = :newAppointmentVenue WHERE rowid = :selectUser", 
+    {'newAppointmentDate':newAppointmentDate, 'newAppointmentTime':newAppointmentTime, 'newAppointmentVenue':centerName, 'selectUser':selectUser})
     connection.commit()
     print("user appointment updated!")
       
@@ -431,22 +437,28 @@ def sortList(): #sort list of users
     userInput = int(input())
     
     if userInput == 1: #sort by name
-        print(sorted(listUser,key=lambda listUser: listUser[1]))
+        for value in myCursor.execute("SELECT * FROM userdata ORDER BY user_name"):
+            print(value)
         exit()
     elif userInput == 2: #sort by age
-        print(sorted(listUser,key=lambda listUser: listUser[2]))
+        for value in myCursor.execute("SELECT * FROM userdata ORDER BY user_age"):
+            print(value)
         exit()        
     elif userInput == 3: #sort by ic number
-        print(sorted(listUser,key=lambda listUser: listUser[3]))
-        exit()          
+        for value in myCursor.execute("SELECT * FROM userdata ORDER BY ic_number"):
+            print(value)
+        exit()         
     elif userInput == 4: #sort by phone number
-        print(sorted(listUser,key=lambda listUser: listUser[4]))
-        exit()          
+        for value in myCursor.execute("SELECT * FROM userdata ORDER BY phone_number"):
+            print(value)
+        exit()         
     elif userInput == 5: #sort by postcode
-        print(sorted(listUser,key=lambda listUser: listUser[5]))
-        exit() 
+        for value in myCursor.execute("SELECT * FROM userdata ORDER BY post_code"):
+            print(value)
+        exit()
     elif userInput == 6: #sort by priority
-        print(sorted(listUser,key=lambda listUser: listUser[23]))
+        for value in myCursor.execute("SELECT * FROM userdata ORDER BY priority"):
+            print(value)
         exit() 
     else:
         print("Please enter a valid option.")
