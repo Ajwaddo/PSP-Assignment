@@ -1,3 +1,7 @@
+#problems
+#cannot add priority in Vaccination() and COVID19Status()
+
+
 # *********************************************************
 # Program: YOUR_FILENAME.py
 # Course: PSP0101 PROBLEM SOLVING AND PROGRAM DESIGN
@@ -236,7 +240,7 @@ def Vaccination(ic): #questions about vaccination
 
     priority = 0 #to declare variable priority
     
-    #to check whether the user answer Y / N
+    #to check whether the user answer Y / N total priority = 7
     if n == 1:
         priority = 0
         if q1 == "Y" or q1 == "y":
@@ -252,13 +256,13 @@ def Vaccination(ic): #questions about vaccination
         if q6 == "Y" or q6 == "y":
             priority += 1
         if userChoice == 1: 
-            priority += 2
+            priority += 1
         elif userChoice == 2:
             priority += 1
         elif userChoice == 3:
             priority += 1
         elif userChoice == 4:
-            priority += 2
+            priority += 1
         elif priority == 5:
             priority += 1
 
@@ -269,6 +273,12 @@ def Vaccination(ic): #questions about vaccination
             print(f'You are NOT ELIGIBLE for vaccine yet')
         else:
             print(f'You are NOT ELIGIBLE for vaccine yet')
+
+        #update priority and questions into database
+        myCursor.execute("UPDATE userdata SET priority = :priority, q1_1 = :q1_1, q1_2 = :q1_2, q1_3 = :q1_3, q1_4 = :q1_4, q1_5 = :q1_5, q1_6 = :q1_6, q1_7 = :q1_7 WHERE ic_number = :ic_number",
+        {'priority':priority, 'q1_1':q1, 'q1_2':q2, 'q1_3':q3, 'q1_4':q4, 'q1_5':q5, 'q1_6':q6, 'q1_7':occupation})
+        connection.commit()
+        print("Successfully updated!")
 
         mainMenu(ic)
     else:
@@ -351,6 +361,11 @@ def COVID19Status(ic): #questions about health status
     else:
         print("Please enter a valid input.")
         COVID19Status(ic)
+
+     #update priority and questions into database
+    myCursor.execute("UPDATE userdata SET priority = :priority, q2_1 = :q2_1, q2_2 = :q2_2, q2_3 = :q2_3, q2_4 = :q2_4, q2_5 = :q2_5, q2_6 = :q2_6, q2_7 = :q2_7 WHERE ic_number = :ic_number",
+    {'priority':priority, 'q2_1':q1, 'q2_2':q2, 'q2_3':q3, 'q2_4':q4, 'q2_5':q5, 'q2_6':q6, 'q2_7':q7})
+    connection.commit()
 
 def ViewAppointment(ic): #to view appointment
     
@@ -464,6 +479,24 @@ def sortList(): #sort list of users
         print("Please enter a valid option.")
         sortList()
 
+def userCategory(): #low, medium, high
+    while True:
+        userInput = int(input("Please choose the category \n1- low risk \n2- medium risk \n3- high risk \n"))
+        for value in listUser:
+            userPriority = value[21]
+        if userInput == 1:
+            if userPriority == 1 or userPriority == 2:
+                print(value)
+        elif userInput == 2:
+            if userPriority == 3 or userPriority == 4:
+                print(value)
+        elif userInput == 3:
+            if userPriority == 5 or userPriority == 6:
+                print(value)
+        else:
+            print("Please enter a valid input.")
+            break
+
 def adminPage(): #admin main menu
     print("Welcome admin! What do you want to do? \n1- create vaccination center \n2- update user information \n3- assign appointment for user \n4- sort list of users \n5- logout \n6- exit")
     userInput = int(input())
@@ -485,4 +518,5 @@ def adminPage(): #admin main menu
         adminPage()
 
 ########## ajwad's part ########### 
-welcome_func()
+#welcome_func()
+adminPage()
