@@ -1,3 +1,8 @@
+#whattodo
+#add priority1, priority2, priority - done
+#sum up priority1 and priority2 as priority
+#only show priority when sorting user/assign appointment
+
 #problems
 #cannot add priority in Vaccination() and COVID19Status()
 
@@ -24,7 +29,11 @@ import sqlite3
 from operator import itemgetter
 connection = sqlite3.connect('user.db')
 myCursor = connection.cursor()
-#in user.db, it has one table(userdata) that contains(rowid int, user_name text, user_age int, ic_number text, phone_number text, post_code int, home_address text, user_type text, q1_1 text, q1_2 text, q1_3 text, q1_4 text, q1_5 text, q1_6 text, q1_7 text, q2_1 text, q2_2 text, q2_3 text, q2_4 text, q2_5 text, q2_6 text, q2_7 text, priority int, vaccination_date text, vaccination_time text, vaccination_venue text) 
+def createDatabase():
+    myCursor.execute("DROP TABLE userdata")
+    print("table dropped")
+    myCursor.execute("CREATE TABLE userdata (user_name text, user_age text, ic_number text, phone_number text, post_code text, home_address text, user_type text, q1_1 text, q1_2 text, q1_3 text, q1_4 text, q1_5 text, q1_6 text, q1_7 text, q2_1 text, q2_2 text, q2_3 text, q2_4 text, q2_5 text, q2_6 text, q2_7 text, priority text, priority1 text, priority2 text, vaccination_date text, vaccination_time text, vaccination_venue text)")
+#in user.db, it has one table(userdata) that contains(0rowid int, 1user_name text, 2user_age text, 3ic_number text, 4phone_number text, 5post_code text, 6home_address text, 7user_type text, 8q1_1 text, 9q1_2 text, 10q1_3 text, 11q1_4 text, 12q1_5 text, 13q1_6 text, 14q1_7 text, 15q2_1 text, 16q2_2 text, 17q2_3 text, 18q2_4 text, 19q2_5 text, 20q2_6 text, 21q2_7 text, 22priority text, 23priority1 text, 24priority2 text, 25vaccination_date text, 26vaccination_time text, 27vaccination_venue text) 
 
 myCursor.execute("SELECT rowid, * FROM userdata") #query all data from userdata table
 listUser = myCursor.fetchall() #store all data in database into a tuple list listUser
@@ -186,6 +195,13 @@ def mainMenu(ic): #user main menu
         mainMenu(ic)
 
 def Vaccination(ic): #questions about vaccination
+    def update():
+        #update priority and questions into database
+        myCursor.execute("UPDATE userdata SET priority1 = :priority, q1_1 = :q1_1, q1_2 = :q1_2, q1_3 = :q1_3, q1_4 = :q1_4, q1_5 = :q1_5, q1_6 = :q1_6, q1_7 = :q1_7 WHERE ic_number = :ic_number",
+        {'priority':priority, 'q1_1':q1, 'q1_2':q2, 'q1_3':q3, 'q1_4':q4, 'q1_5':q5, 'q1_6':q6, 'q1_7':occupation, 'ic_number':ic})
+        connection.commit()
+        print("Successfully updated!")
+
     print('1. Are you interested to take the COVID-19 vaccine? ')
     q1 = input('("Y/N"):')
 
@@ -266,25 +282,20 @@ def Vaccination(ic): #questions about vaccination
         elif priority == 5:
             priority += 1
 
-        if priority>3:
-            print(f'You are ELIGIBLE for vaccine')
-            print('View Appoinment')
-        elif priority<3:
-            print(f'You are NOT ELIGIBLE for vaccine yet')
-        else:
-            print(f'You are NOT ELIGIBLE for vaccine yet')
-
-        #update priority and questions into database
-        myCursor.execute("UPDATE userdata SET priority = :priority, q1_1 = :q1_1, q1_2 = :q1_2, q1_3 = :q1_3, q1_4 = :q1_4, q1_5 = :q1_5, q1_6 = :q1_6, q1_7 = :q1_7 WHERE ic_number = :ic_number",
-        {'priority':priority, 'q1_1':q1, 'q1_2':q2, 'q1_3':q3, 'q1_4':q4, 'q1_5':q5, 'q1_6':q6, 'q1_7':occupation})
-        connection.commit()
-        print("Successfully updated!")
-
+        #update user data into database
+        update()
         mainMenu(ic)
     else:
         mainMenu(ic)
 
 def COVID19Status(ic): #questions about health status
+    def update():
+        #update priority and questions into database
+        myCursor.execute("UPDATE userdata SET priority2 = :priority, q2_1 = :q2_1, q2_2 = :q2_2, q2_3 = :q2_3, q2_4 = :q2_4, q2_5 = :q2_5, q2_6 = :q2_6, q2_7 = :q2_7 WHERE ic_number = :ic_number",
+        {'priority':priority, 'q2_1':q1, 'q2_2':q2, 'q2_3':q3, 'q2_4':q4, 'q2_5':q5, 'q2_6':q6, 'q2_7':q7, 'ic_number':ic})
+        connection.commit()
+        print("Successfully updated!")
+
     print('1. Are you exhibiting 2 or more symptoms as listed below? ')
     print('- Fever')
     print('- Chills')
@@ -345,16 +356,7 @@ def COVID19Status(ic): #questions about health status
         if q7 == "Y" or q7 == "y":
             priority += 1
 
-        if priority>3:
-            print(f'Covid-19 Risk Status = High Risk')
-            print('You are UNDER QUARANTINE')
-        elif priority<3:
-            print(f'Covid-19 Risk Status = Low Risk')
-            print('You are NORMAL')
-        else:
-            print(f'Covid-19 Risk Status = High Risk')
-            print('You are UNDER QUARANTINE')
-
+        update()
         mainMenu(ic)
     elif n == 2:
         mainMenu(ic)
@@ -363,7 +365,7 @@ def COVID19Status(ic): #questions about health status
         COVID19Status(ic)
 
      #update priority and questions into database
-    myCursor.execute("UPDATE userdata SET priority = :priority, q2_1 = :q2_1, q2_2 = :q2_2, q2_3 = :q2_3, q2_4 = :q2_4, q2_5 = :q2_5, q2_6 = :q2_6, q2_7 = :q2_7 WHERE ic_number = :ic_number",
+    myCursor.execute("UPDATE userdata SET priority2 = :priority, q2_1 = :q2_1, q2_2 = :q2_2, q2_3 = :q2_3, q2_4 = :q2_4, q2_5 = :q2_5, q2_6 = :q2_6, q2_7 = :q2_7 WHERE ic_number = :ic_number",
     {'priority':priority, 'q2_1':q1, 'q2_2':q2, 'q2_3':q3, 'q2_4':q4, 'q2_5':q5, 'q2_6':q6, 'q2_7':q7})
     connection.commit()
 
@@ -519,4 +521,5 @@ def adminPage(): #admin main menu
 
 ########## ajwad's part ########### 
 #welcome_func()
-adminPage()
+#adminPage()
+#createDatabase()
