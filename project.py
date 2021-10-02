@@ -2,6 +2,8 @@
 #add priority1, priority2, priority - done
 #sum up priority1 and priority2 as priority
 #only show priority when sorting user/assign appointment
+#add preferred time, date into database
+#fix database
 
 #problems
 #cannot add priority in Vaccination() and COVID19Status()
@@ -32,7 +34,7 @@ myCursor = connection.cursor()
 def createDatabase():
     myCursor.execute("DROP TABLE userdata")
     print("table dropped")
-    myCursor.execute("CREATE TABLE userdata (user_name text, user_age text, ic_number text, phone_number text, post_code text, home_address text, user_type text, q1_1 text, q1_2 text, q1_3 text, q1_4 text, q1_5 text, q1_6 text, q1_7 text, q2_1 text, q2_2 text, q2_3 text, q2_4 text, q2_5 text, q2_6 text, q2_7 text, priority text, priority1 text, priority2 text, vaccination_date text, vaccination_time text, vaccination_venue text)")
+    myCursor.execute("CREATE TABLE userdata (user_name text, user_age text, ic_number text, phone_number text, post_code text, home_address text, user_type text, q1_1 text, q1_2 text, q1_3 text, q1_4 text, q1_5 text, q1_6 text, q1_7 text, q2_1 text, q2_2 text, q2_3 text, q2_4 text, q2_5 text, q2_6 text, q2_7 text, priority text, priority1 text, priority2 text, vaccination_date text, vaccination_time text, vaccination_venue text, preferred_time text, preffered_date text)")
 #in user.db, it has one table(userdata) that contains(0rowid int, 1user_name text, 2user_age text, 3ic_number text, 4phone_number text, 5post_code text, 6home_address text, 7user_type text, 8q1_1 text, 9q1_2 text, 10q1_3 text, 11q1_4 text, 12q1_5 text, 13q1_6 text, 14q1_7 text, 15q2_1 text, 16q2_2 text, 17q2_3 text, 18q2_4 text, 19q2_5 text, 20q2_6 text, 21q2_7 text, 22priority text, 23priority1 text, 24priority2 text, 25vaccination_date text, 26vaccination_time text, 27vaccination_venue text) 
 
 myCursor.execute("SELECT rowid, * FROM userdata") #query all data from userdata table
@@ -66,7 +68,7 @@ def login_func(): #login page
         while True:
             if Phone == phoneNumber and IC == icNumber and userType == "user":
                 print("Succesfully login!")
-                mainMenu(IC) #go to user main menu
+                rsvp(IC) #go to user main menu
             else:
                 loginFailed()
         
@@ -83,7 +85,7 @@ def login_func(): #login page
         while True:
             if Phone == phoneNumber and IC == icNumber and userType == "admin":
                 print("Succesfully login!")
-                mainMenu(IC) #go to user main menu
+                rsvp(IC) #go to user main menu
             else:
                 loginFailed()
     
@@ -162,14 +164,34 @@ print('Welcome to MySejahtera!\n')
 ######### Hannah's part ##########
 
 ########## Hakeem's part ##########
-def rsvp(user): #questions about appointment confirmation
-    print('1. Are you confirm to take the COVID-19 vaccine at the date given')
-    q1 = input('("Y/N"):')
+def rsvp(ic): #questions about appointment confirmation
+    def preferredTimeDate(ic):
+        preferredDate = input("What is your preffered date to take your vaccine? (dd/mm/yyyy): ")
+        preferredTime = input("What is your preferred time to take your vacine? (24-hour): ")
 
-    if q1 == "Y" or q1 == "n":
-         print("Thank you for your answer")
-    elif q1 == "N" or q1 == "n":
-        print("do you want to apply new appointment")
+        #update in database
+        myCursor.execute("UPDATE userdata SET preferred_time = :preferredTime, preferred_date = :preferredDate", 
+        {'preferredTime':preferredTime, 'preferredDate':preferredDate})
+        print("Preferred time and date updated. Please wait for your appointment.")
+        mainMenu(ic)
+    for value in listUser:
+        IC = value[3]
+        if IC == ic:
+            if value[25] == None:
+                print("Sorry, you don't have appointment date yet.")
+                preferredTimeDate(IC)
+            else:
+                print(f"date = {value[25]} | time = {value[26]} | venue = {value[27]}")
+                print('1. Are you confirm to take the COVID-19 vaccine at the date given')
+                q1 = input('("Y/N"):')
+
+                if q1 == "Y" or q1 == "n":
+                    print("Thank you for your answer")
+                elif q1 == "N" or q1 == "n":
+                    preferredTimeDate(IC)
+        else:
+            print("Sorry, user not found.")
+
 ########## Hakeem's part ##########
 
 ########## Nabilah's part ##########
@@ -520,6 +542,7 @@ def adminPage(): #admin main menu
         adminPage()
 
 ########## ajwad's part ########### 
-#welcome_func()
+welcome_func()
 #adminPage()
 #createDatabase()
+#rsvp(ic = '1')
