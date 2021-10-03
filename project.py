@@ -2,8 +2,9 @@
 #add priority1, priority2, priority - done
 #sum up priority1 and priority2 as priority
 #only show priority when sorting user/assign appointment
-#add preferred time, date into database
-#fix database
+#add preferred time, date into database - done
+#fix database - done
+#make list display as table(sort)
 
 #problems
 #cannot add priority in Vaccination() and COVID19Status()
@@ -34,8 +35,8 @@ myCursor = connection.cursor()
 def createDatabase():
     myCursor.execute("DROP TABLE userdata")
     print("table dropped")
-    myCursor.execute("CREATE TABLE userdata (user_name text, user_age text, ic_number text, phone_number text, post_code text, home_address text, user_type text, q1_1 text, q1_2 text, q1_3 text, q1_4 text, q1_5 text, q1_6 text, q1_7 text, q2_1 text, q2_2 text, q2_3 text, q2_4 text, q2_5 text, q2_6 text, q2_7 text, priority text, priority1 text, priority2 text, vaccination_date text, vaccination_time text, vaccination_venue text, preferred_time text, preffered_date text)")
-#in user.db, it has one table(userdata) that contains(0rowid int, 1user_name text, 2user_age text, 3ic_number text, 4phone_number text, 5post_code text, 6home_address text, 7user_type text, 8q1_1 text, 9q1_2 text, 10q1_3 text, 11q1_4 text, 12q1_5 text, 13q1_6 text, 14q1_7 text, 15q2_1 text, 16q2_2 text, 17q2_3 text, 18q2_4 text, 19q2_5 text, 20q2_6 text, 21q2_7 text, 22priority text, 23priority1 text, 24priority2 text, 25vaccination_date text, 26vaccination_time text, 27vaccination_venue text) 
+    myCursor.execute("CREATE TABLE userdata (user_name text, user_age text, ic_number text, phone_number text, post_code text, home_address text, q1_1 text, q1_2 text, q1_3 text, q1_4 text, q1_5 text, q1_6 text, q1_7 text, q2_1 text, q2_2 text, q2_3 text, q2_4 text, q2_5 text, q2_6 text, q2_7 text, priority text, priority1 text, priority2 text, vaccination_date text, vaccination_time text, vaccination_venue text, preferred_time text, preferred_date text, rsvp text)")
+#in user.db, it has one table(userdata) that contains(0rowid int, 1user_name text, 2user_age text, 3ic_number text, 4phone_number text, 5post_code text, 6home_address text, 7q1_1 text, 8q1_2 text, 9q1_3 text, 10q1_4 text, 11q1_5 text, 12q1_6 text, 13q1_7 text, 14q2_1 text, 15q2_2 text, 16q2_3 text, 17q2_4 text, 18q2_5 text, 19q2_6 text, 20q2_7 text, 21priority text, 22priority1 text, 23priority2 text, 24vaccination_date text, 25vaccination_time text, 26vaccination_venue text, 27preferred_time text, 28preffered_date text, 29rsvp text) 
 
 myCursor.execute("SELECT rowid, * FROM userdata") #query all data from userdata table
 listUser = myCursor.fetchall() #store all data in database into a tuple list listUser
@@ -47,95 +48,47 @@ listVaccinationCenters = myCursor.fetchall() #store all data in database into a 
 ########################################################### FUNCTIONS FOR WELCOMEPAGE #########################################################################
 
 def login_func(): #login page
-
     #define function
-    def loginFailed(): #what to do when login failed
-        if input("Login failed. Try again(Y), Back(N) ").capitalize() == "Y":
-            login_func()
-        else:
-            welcome_func()
-
     def userLogin(): #for user to log in
         print("-"*50)
-        Phone = input('Enter your phone number: \n').strip()
         IC = input('Enter your IC number: \n').strip()
         
-        for value in listUser: #iterate through listUser and assign variable to some values in it
-            icNumber = value[3]
-            phoneNumber = value[4]
-            userType = value[7]
-
         while True:
-            if Phone == phoneNumber and IC == icNumber and userType == "user":
-                print("Succesfully login!")
-                rsvp(IC) #go to user main menu
-            else:
-                loginFailed()
-        
-    def adminLogin(): #for admin to login
-        print("-"*50)
-        Phone = input('Enter your phone number: \n').strip()
-        IC = input('Enter your IC number: \n').strip()
-        
-        for value in listUser: #iterate through listUser and assign variable to some values in it
-            icNumber = value[3]
-            phoneNumber = value[4]
-            userType = value[7]
+            for value in listUser: #iterate through listUser and assign variable to some values in it
+                icNumber = value[3]
+                if IC == icNumber:
+                    print("Succesfully login!")
+                    rsvp(IC) #go to user main menu
+                    break
+                else:
+                    if input("Login failed. Try again(Y), Back(N) ").capitalize() == "Y":
+                        login_func()
+                        break
+                    else:
+                        welcome_func()
+                        break
 
-        while True:
-            if Phone == phoneNumber and IC == icNumber and userType == "admin":
-                print("Succesfully login!")
-                rsvp(IC) #go to user main menu
-            else:
-                loginFailed()
-    
     #determine user/admin
     userInput = int(input("Are you a, \n1- User \n2- Admin \n"))
     if userInput == 1:
         userLogin()
     elif userInput == 2:
-        adminLogin()
+        adminPage()
 
 def signup_func(): #signup page
+    print("Please key in the following details:")
+    name = input('Name: Capital Letters \n').title().strip()
+    age = input('Age: \n').strip()
+    ic= input('IC: No "-" E.g 0123456789 \n').strip()
+    phone = input('Phone number: E.g 6017890382 \n').strip()
+    postcode=int(input('Postcode: \n'))
+    address=input('Address: \n').strip()
 
-    #define function
-    def userSignup(): #sign up for user
-        print("Please key in the following details:")
-        name = input('Name: Capital Letters \n').title().strip()
-        age = input('Age: \n').strip()
-        ic= input('IC: No "-" E.g 0123456789 \n').strip()
-        phone = input('Phone number: E.g 6017890382 \n').strip()
-        postcode=int(input('Postcode: \n'))
-        address=input('Address: \n').strip()
-        userType = "user"
-
-        myCursor.execute("INSERT INTO userdata (user_name , user_age, ic_number, phone_number, post_code, home_address, user_type) VALUES (?, ?, ?, ?, ?, ?, ?)", (name, age, ic, phone, postcode, address, userType))
-        connection.commit()
-        print("New user successfully registered!")
-        mainMenu(ic)
-
-    def adminSignup(): #sign up for user
-        print("Please key in the following details:")
-        name = input('Name: Capital Letters \n').title().strip()
-        age = input('Age: \n').strip()
-        ic= input('IC: No "-" E.g 0123456789 \n').strip()
-        phone = input('Phone number: E.g 6017890382 \n').strip()
-        postcode=int(input('Postcode: \n'))
-        address=input('Address: \n').strip()
-        userType = "admin"
-
-        myCursor.execute("INSERT INTO userdata (user_name , user_age, ic_number, phone_number, post_code, home_address, user_type) VALUES (?, ?, ?, ?, ?, ?, ?)", (name, age, ic, phone, postcode, address, userType))
-        connection.commit()
-        print("New admin successfully registered!")
-        adminPage()
+    myCursor.execute("INSERT INTO userdata (user_name , user_age, ic_number, phone_number, post_code, home_address) VALUES (?, ?, ?, ?, ?, ?)", (name, age, ic, phone, postcode, address))
+    connection.commit()
+    print("New user successfully registered!")
+    rsvp(ic)
     
-    #determine user/admin
-    userInput = int(input("Are you a, \n1- User \n2- Admin \n"))
-    if userInput == 1:
-        userSignup()
-    elif userInput == 2:
-        adminSignup()
-
 def welcome_func(): #so users have the option whether to login or register
     print("-"*50)
     print('What would you like to do?')
@@ -144,8 +97,10 @@ def welcome_func(): #so users have the option whether to login or register
         option = int(input("1- Login \n2- Register \n3- Exit: \n"))
         if option == 1:
             login_func()
+            break
         elif option == 2:
             signup_func()
+            break
         elif option == 3:
             exit()
         else:
@@ -153,33 +108,36 @@ def welcome_func(): #so users have the option whether to login or register
             welcome_func()
  
 ########################################################### FUNCTIONS FOR WELCOMEPAGE #########################################################################
-
-########################################################### WELCOMEPAGE #########################################################################
-
-#call functions
-print('Hello user!')
-print('Welcome to MySejahtera!\n')
-
-########################################################### WELCOMEPAGE #########################################################################
 ######### Hannah's part ##########
 
 ########## Hakeem's part ##########
 def rsvp(ic): #questions about appointment confirmation
+    print("-"*50)
     def preferredTimeDate(ic):
         preferredDate = input("What is your preffered date to take your vaccine? (dd/mm/yyyy): ")
         preferredTime = input("What is your preferred time to take your vacine? (24-hour): ")
 
         #update in database
-        myCursor.execute("UPDATE userdata SET preferred_time = :preferredTime, preferred_date = :preferredDate", 
-        {'preferredTime':preferredTime, 'preferredDate':preferredDate})
+        myCursor.execute("UPDATE userdata SET preferred_time = :preferredTime, preferred_date = :preferredDate WHERE ic_number = :ic", 
+        {'preferredTime':preferredTime, 'preferredDate':preferredDate, 'ic':ic})
+        connection.commit()
         print("Preferred time and date updated. Please wait for your appointment.")
+        print("_"*50)
         mainMenu(ic)
     for value in listUser:
         IC = value[3]
+        NAME = value[1]
         if IC == ic:
+            print(f"Hello, {NAME}!")
             if value[25] == None:
                 print("Sorry, you don't have appointment date yet.")
-                preferredTimeDate(IC)
+                if value[27]: #check whether user have preferred date or not yet
+                    print("Please wait for your appointment.")
+                    print("_"*50)
+                    mainMenu(ic)
+                else:
+                    print("_"*50)
+                    preferredTimeDate(ic)
             else:
                 print(f"date = {value[25]} | time = {value[26]} | venue = {value[27]}")
                 print('1. Are you confirm to take the COVID-19 vaccine at the date given')
@@ -188,9 +146,8 @@ def rsvp(ic): #questions about appointment confirmation
                 if q1 == "Y" or q1 == "n":
                     print("Thank you for your answer")
                 elif q1 == "N" or q1 == "n":
-                    preferredTimeDate(IC)
-        else:
-            print("Sorry, user not found.")
+                    preferredTimeDate(ic)
+                mainMenu(ic)
 
 ########## Hakeem's part ##########
 
@@ -217,13 +174,6 @@ def mainMenu(ic): #user main menu
         mainMenu(ic)
 
 def Vaccination(ic): #questions about vaccination
-    def update():
-        #update priority and questions into database
-        myCursor.execute("UPDATE userdata SET priority1 = :priority, q1_1 = :q1_1, q1_2 = :q1_2, q1_3 = :q1_3, q1_4 = :q1_4, q1_5 = :q1_5, q1_6 = :q1_6, q1_7 = :q1_7 WHERE ic_number = :ic_number",
-        {'priority':priority, 'q1_1':q1, 'q1_2':q2, 'q1_3':q3, 'q1_4':q4, 'q1_5':q5, 'q1_6':q6, 'q1_7':occupation, 'ic_number':ic})
-        connection.commit()
-        print("Successfully updated!")
-
     print('1. Are you interested to take the COVID-19 vaccine? ')
     q1 = input('("Y/N"):')
 
@@ -275,49 +225,45 @@ def Vaccination(ic): #questions about vaccination
     print('1. Submit')
     print('2. Cancel')
     n = int(input())
-
-    priority = 0 #to declare variable priority
     
+    global priority1
+    priority1 = 0 #to declare variable priority2
+
     #to check whether the user answer Y / N total priority = 7
     if n == 1:
-        priority = 0
         if q1 == "Y" or q1 == "y":
-            priority += 1
+            priority1 += 1
         if q2 == "Y" or q2 == "y":
-            priority += 1
+            priority1 += 1
         if q3 == "Y" or q3 == "y":
-            priority += 1
+            priority1 += 1
         if q4 == "Y" or q4 == "y":
-            priority += 1
+            priority1 += 1
         if q5 == "Y" or q5 == "y":
-            priority += 1
+            priority1 += 1
         if q6 == "Y" or q6 == "y":
-            priority += 1
+            priority1 += 1
         if userChoice == 1: 
-            priority += 1
+            priority1 += 1
         elif userChoice == 2:
-            priority += 1
+            priority1 += 1
         elif userChoice == 3:
-            priority += 1
+            priority1 += 1
         elif userChoice == 4:
-            priority += 1
-        elif priority == 5:
-            priority += 1
+            priority1 += 1
+        elif userChoice == 5:
+            priority1 += 1
 
-        #update user data into database
-        update()
+        #update priority and questions into database
+        myCursor.execute("UPDATE userdata SET priority1 = :priority, q1_1 = :q1_1, q1_2 = :q1_2, q1_3 = :q1_3, q1_4 = :q1_4, q1_5 = :q1_5, q1_6 = :q1_6, q1_7 = :q1_7 WHERE ic_number = :ic_number",
+        {'priority':priority1, 'q1_1':q1, 'q1_2':q2, 'q1_3':q3, 'q1_4':q4, 'q1_5':q5, 'q1_6':q6, 'q1_7':occupation, 'ic_number':ic})
+        connection.commit()
+        print("Successfully updated!")
         mainMenu(ic)
     else:
         mainMenu(ic)
 
 def COVID19Status(ic): #questions about health status
-    def update():
-        #update priority and questions into database
-        myCursor.execute("UPDATE userdata SET priority2 = :priority, q2_1 = :q2_1, q2_2 = :q2_2, q2_3 = :q2_3, q2_4 = :q2_4, q2_5 = :q2_5, q2_6 = :q2_6, q2_7 = :q2_7 WHERE ic_number = :ic_number",
-        {'priority':priority, 'q2_1':q1, 'q2_2':q2, 'q2_3':q3, 'q2_4':q4, 'q2_5':q5, 'q2_6':q6, 'q2_7':q7, 'ic_number':ic})
-        connection.commit()
-        print("Successfully updated!")
-
     print('1. Are you exhibiting 2 or more symptoms as listed below? ')
     print('- Fever')
     print('- Chills')
@@ -360,36 +306,37 @@ def COVID19Status(ic): #questions about health status
     print('2. Cancel')
     n = int(input())
 
-    priority = 0 #to declare variable priority
+    global priority2
+    priority2 = 0 #to declare variable priority2
+
         #to check whether the user answer Y / N
     if n == 1:
         if q1 == "Y" or q1 == "y":
-            priority += 1
+            priority2 += 1
         if q2 == "Y" or q2 == "y":
-            priority += 1
+            priority2 += 1
         if q3 == "Y" or q3 == "y":
-            priority += 1
+            priority2 += 1
         if q4 == "Y" or q4 == "y":
-            priority += 1
+            priority2 += 1
         if q5 == "Y" or q5 == "y":
-            priority += 1
+            priority2 += 1
         if q6 == "Y" or q6 == "y":
-            priority += 1
+            priority2 += 1
         if q7 == "Y" or q7 == "y":
-            priority += 1
+            priority2 += 1
 
-        update()
+        #update priority and questions into database
+        myCursor.execute("UPDATE userdata SET priority2 = :priority, q2_1 = :q2_1, q2_2 = :q2_2, q2_3 = :q2_3, q2_4 = :q2_4, q2_5 = :q2_5, q2_6 = :q2_6, q2_7 = :q2_7 WHERE ic_number = :ic_number",
+        {'priority':priority2, 'q2_1':q1, 'q2_2':q2, 'q2_3':q3, 'q2_4':q4, 'q2_5':q5, 'q2_6':q6, 'q2_7':q7, 'ic_number':ic})
+        connection.commit()
+        print("Successfully updated!")
         mainMenu(ic)
     elif n == 2:
         mainMenu(ic)
     else:
         print("Please enter a valid input.")
         COVID19Status(ic)
-
-     #update priority and questions into database
-    myCursor.execute("UPDATE userdata SET priority2 = :priority, q2_1 = :q2_1, q2_2 = :q2_2, q2_3 = :q2_3, q2_4 = :q2_4, q2_5 = :q2_5, q2_6 = :q2_6, q2_7 = :q2_7 WHERE ic_number = :ic_number",
-    {'priority':priority, 'q2_1':q1, 'q2_2':q2, 'q2_3':q3, 'q2_4':q4, 'q2_5':q5, 'q2_6':q6, 'q2_7':q7})
-    connection.commit()
 
 def ViewAppointment(ic): #to view appointment
     
@@ -542,7 +489,16 @@ def adminPage(): #admin main menu
         adminPage()
 
 ########## ajwad's part ########### 
+
+########################################################### WELCOMEPAGE #########################################################################
+
+#call functions
+print('Hello user!')
+print('Welcome to MySejahtera!\n')
 welcome_func()
 #adminPage()
 #createDatabase()
-#rsvp(ic = '1')
+#signup_func()
+#login_func()
+########################################################### WELCOMEPAGE #########################################################################
+
