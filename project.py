@@ -5,6 +5,8 @@
 #add preferred time, date into database - done
 #fix database - done
 #make list display as table(sort)
+#make auto assignment of appointment
+#put preferred date,time when want to assign appointment
 
 #problems
 #cannot add priority in Vaccination() and COVID19Status()
@@ -139,7 +141,7 @@ def rsvp(ic): #questions about appointment confirmation
                     print("_"*50)
                     preferredTimeDate(ic)
             else:
-                print(f"date = {value[25]} | time = {value[26]} | venue = {value[27]}")
+                print(f"date = {value[24]} | time = {value[25]} | venue = {value[26]}")
                 print('1. Are you confirm to take the COVID-19 vaccine at the date given')
                 q1 = input('("Y/N"):')
 
@@ -370,7 +372,14 @@ def createVaccinationCenter(): #to create vaccination center
 
     print("Vaccination center has been registered succesfully")
     adminPage()
-  
+
+def list_vaccination_centers():
+    for center in listVaccinationCenters:
+        for user in listUser:
+            if center[1] == user[26]:
+                print(user[0], user[1], user[2], user[3], user[4], user[5], user[6])
+        print()
+
 def deleteUser(): #to delete user
     IC = input("Please enter the user IC: ")
     myCursor.execute("DELETE FROM userdata WHERE ic_number = :IC", {'IC':IC})
@@ -469,7 +478,7 @@ def userCategory(): #low, medium, high
             break
 
 def adminPage(): #admin main menu
-    print("Welcome admin! What do you want to do? \n1- create vaccination center \n2- update user information \n3- assign appointment for user \n4- sort list of users \n5- logout \n6- exit")
+    print("Welcome admin! What do you want to do? \n1- create vaccination center \n2- update user information \n3- assign appointment for user \n4- sort list of users \n5- view user appointments \n6- logout \n7- exit")
     userInput = int(input())
 
     if userInput == 1:
@@ -481,8 +490,10 @@ def adminPage(): #admin main menu
     elif userInput == 4:
         sortList()
     elif userInput == 5:
-        welcome_func()
+        list_vaccination_centers()
     elif userInput == 6:
+        welcome_func()
+    elif userInput == 7:
         exit()
     else:
         print("Please enter a valid option.")
