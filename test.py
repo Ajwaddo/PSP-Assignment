@@ -11,16 +11,39 @@ def createDatabase():
 myCursor.execute("SELECT rowid, * FROM userdata") #query all data from userdata table
 listUser = myCursor.fetchall() #store all data in database into a tuple list listUser
 
-def longest():
+myCursor.execute("SELECT rowid, * FROM vaccinationCenters") #query all data from vaccinationCenters table
+listVaccinationCenters = myCursor.fetchall() #store all data in database into a tuple-in-list listVaccinationCenters
+
+def longestName():
     longest_name = 0
     for user in listUser:
         if len(user[1]) > longest_name:
             longest_name = len(user[1])
+
     return longest_name
 
-head = "name"+" "*(longest()-len("name"))+" | age | ic number | phone number | postcode | priority | date | time | venue | rsvp |"
+def longestCenterName():
+    longest_center_name = 0
+    for center in listVaccinationCenters:
+        if len(center[1]) > longest_center_name:
+            longest_center_name = len(center[1])
+
+    return longest_center_name
+
+head = "| name"+" "*(longestName()-len("name"))+" | age | ic number | phone number | postcode | priority | date" + " "*7 + "| time | venue" + " "*(longestCenterName()-4) + "| rsvp |"
+print("-"*len(head))
 print(head)
 print("-"*len(head))
 for element in listUser:
-    print(element[1] + " "*(longest()-len(element[1])) +f" | {element[2]} | {element[3]} | {element[4]} | {element[5]} | {element[21]} | {element[24]} | {element[25]} | {element[26]} | {element[29]}" ) 
+    spaceDate = ""
+    spaceVenue = ""
+    if element[24] == None:
+        spaceDate = " "*6
+    if element[26] == None:
+        spaceVenue = " "*(longestCenterName()-4)
+    else:
+        spaceVenue = " "*(longestCenterName()-len(element[26]))
+    print("| " + element[1] + " "*(longestName()-len(element[1])) +f" | {element[2]}  | {element[3]}         | {element[4]}            | {element[5]}        | {element[21]}     |" + f" {element[24]}" + spaceDate + f" | {element[25]} |" + f" {element[26]}" + spaceVenue  + f" | {element[29]} |" )
+    
+print("-"*(len(head)))
     

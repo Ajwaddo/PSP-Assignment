@@ -85,6 +85,7 @@ def signup_func(): #signup page
     phone = input('Phone number: E.g 6017890382 \n').strip()
     postcode=int(input('Postcode: \n'))
     address=input('Address: \n').strip()
+    
 
     myCursor.execute("INSERT INTO userdata (user_name , user_age, ic_number, phone_number, post_code, home_address) VALUES (?, ?, ?, ?, ?, ?)", (name, age, ic, phone, postcode, address))
     connection.commit()
