@@ -463,7 +463,7 @@ def sortList(): #sort list of users
 def userCategory(): #low, medium, high
     while True:
         userInput = int(input("Please choose the category \n1- low risk \n2- medium risk \n3- high risk \n"))
-        for value in listUser:
+        for value in listUser: #get user data
             userPriority = value[21]
         if userInput == 1:
             if userPriority == 1 or userPriority == 2:
