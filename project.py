@@ -31,7 +31,8 @@
 # *********************************************************
 
 import sqlite3
-from operator import itemgetter
+import math
+from operator import itemgetter, pos
 connection = sqlite3.connect('user.db')
 myCursor = connection.cursor()
 def createDatabase():
@@ -388,6 +389,43 @@ def deleteUser(): #to delete user
     print("User deleted.")
     adminPage()
 
+def autoAssign():
+    #get user with no appointment
+    for value in listUser: #show user without appointment
+        dictcenterpostcode = {}
+        listdiffpostcode = []
+        nearestpostcodecenter = 0
+        postcodeDifference = 0
+        userID = value[0]
+        username = value[1]
+        appointmentDate = value[24]
+        postcode = value[5] #get their postcode
+        if appointmentDate == None:
+            print(f"user ID: {userID} | username: {username} | appointment date: {appointmentDate} | postcode: {postcode}")
+            for value in listVaccinationCenters: #show vaccination center's row id, name, and postcode
+                centerPostcode = value[2] #get vaccination center postcode
+                postcodeDifference = int(math.fabs(centerPostcode - int(postcode))) #get postcode difference in absolute value
+                dictcenterpostcode[postcodeDifference] = centerPostcode
+                listdiffpostcode.append(postcodeDifference)
+            listdiffpostcode.sort()
+            nearestpostcodecenter = dictcenterpostcode[listdiffpostcode[0]] #get the postcode of the nearest center
+
+        nearestCenter = myCursor.execute("SELECT * FROM vaccinationCenters WHERE postcode = :postcode", {'postcode':nearestpostcodecenter})
+        
+        for value in nearestCenter:
+            centerName = value[0]
+            capacityHour = value[3]
+            capacityDay = value[4]
+
+            print(f"Nearest center: {centerName} | postcode: {nearestpostcodecenter} | capacity per hour: {capacityHour} | capacity per day: {capacityDay}")
+            print("-"*50)
+            
+
+    
+    #check what day is free
+    #check what hour is free
+    #assign for user
+
 def assignAppointment(): #to assign appointment
     print("User without appointment date: \n")
 
@@ -395,7 +433,8 @@ def assignAppointment(): #to assign appointment
         userID = value[0]
         username = value[1]
         appointmentDate = value[24]
-        print(f"user ID: {userID} | username: {username} | appointment date: {appointmentDate}")
+        if appointmentDate == None:
+            print(f"user ID: {userID} | username: {username} | appointment date: {appointmentDate}")
     print("-"*50)
     print("Vaccination Center: \n")
     for value in listVaccinationCenters: #show vaccination center's row id, name, and postcode
@@ -507,7 +546,9 @@ def adminPage(): #admin main menu
 #call functions
 print('Hello user!')
 print('Welcome to MySejahtera!\n')
-welcome_func()
+#welcome_func()
+#assignAppointment()
+autoAssign()
 #adminPage()
 #createDatabase()
 #signup_func()
