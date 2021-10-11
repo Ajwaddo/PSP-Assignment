@@ -419,8 +419,6 @@ def autoAssign():
 
             print(f"Nearest center: {centerName} | postcode: {nearestpostcodecenter} | capacity per hour: {capacityHour} | capacity per day: {capacityDay}")
             print("-"*50)
-            
-
     
     #check what day is free
     #check what hour is free
@@ -553,5 +551,6 @@ autoAssign()
 #createDatabase()
 #signup_func()
 #login_func()
+#createVaccinationCenter()
 ########################################################### WELCOMEPAGE #########################################################################
 
