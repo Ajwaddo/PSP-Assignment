@@ -20,7 +20,7 @@
 # Year: 2021/22 Trimester 1
 # Member_1: 1211103139 | HANNAH SOFEA BINTI ROSLEE | 1211103139@student.mmu.edu.my | +60123616790
 # Member_2: ID | NAME | EMAIL | PHONES
-# Member_3: 1211103138 | NURUL NABILAH BINTI MOHD NOOR HAKIM | 1211103138@student.mmu.edu.my | +60132027946
+# Member_3: 1211103183 | NURUL NABILAH BINTI MOHD NOOR HAKIM | 1211103183@student.mmu.edu.my | +60132027946
 # Member_4: 1211103128 | MUHAMMAD AJWAD BIN MOHAMAD A'SIM | 1211103128@student.mmu.edu.my | +601154261979
 # *********************************************************
 # Task Distribution
@@ -130,31 +130,53 @@ def rsvp(ic): #questions about appointment confirmation
         print("Preferred time and date updated. Please wait for your appointment.")
         print("_"*50)
         mainMenu(ic)
-    for value in listUser:
-        IC = value[3]
-        NAME = value[1]
-        if IC == ic:
-            print(f"Hello, {NAME}!")
-            if value[25] == None:
+    for value in listUser: # for loop to iterate through listUser
+        IC = value[3] # assign value on index to IC
+        NAME = value[1] # assign value on index to IC
+        if IC == ic: # compare whether IC(from database) is equal to ic(inputted by user during login/signup) 
+            print(f"Hello, {NAME}!") # string formatting
+            if value[25] == None: # check if user has vaccination time(appointment) or not
                 print("Sorry, you don't have appointment date yet.")
-                if value[27]: #check whether user have preferred date or not yet
-                    print("Please wait for your appointment.")
-                    print("_"*50)
-                    mainMenu(ic)
-                else:
-                    print("_"*50)
-                    preferredTimeDate(ic)
-            else:
-                print(f"date = {value[24]} | time = {value[25]} | venue = {value[26]}")
-                print('1. Are you confirm to take the COVID-19 vaccine at the date given')
-                q1 = input('("Y/N"):')
+                # if value[27]: #check whether user have preferred date or not yet
+                #     print("Please wait for your appointment.")
+                #     print("_"*50)
+                #     mainMenu(ic)
+                # else:
+                #     print("_"*50)
+                #     preferredTimeDate(ic)
+            else: # if user already has an appointment
+                print(f"date = {value[24]} | time = {value[25]} | venue = {value[26]}") # print vaccination date, time, venue
+                print('1. Are you confirm to take the COVID-19 vaccine at the date given') # function rsvp
+                q1 = input('("Y/N"):') # confirmation for appointment
 
                 if q1 == "Y" or q1 == "n":
                     print("Thank you for your answer")
+                    # store user input
+                    myCursor.execute("UPDATE userdata SET rsvp = :q1 WHERE ic_number = :ic", {'q1':q1, 'ic':IC}) # update changes into database
+                    connection.commit() # save changes into database
+                    
                 elif q1 == "N" or q1 == "n":
-                    preferredTimeDate(ic)
-                mainMenu(ic)
+                    #preferredTimeDate(ic)
+                    newDate = None
+                    newTime = None
+                    newVenue = None
 
+                    # update in the database
+                    myCursor.execute("UPDATE userdata SET rsvp = :q1, vaccination_date = :newDate, vaccination_Time = :newTime, vaccination_venue = :newVenue WHERE ic_number = :ic", {'q1':q1, 'newDate':newDate, 'newTime':newTime, 'newVenue':newVenue, 'ic':IC})
+                    connection.commit()
+                mainMenu(ic)
+                
+
+def editUser(ic):
+    newPhoneNumber = input("Please enter your new phone number: ")
+    newName = input("Please enter your new name: ")
+    
+    if len(newPhoneNumber) != 0: 
+        myCursor.execute("UPDATE userdata SET phone_number = :newPhoneNumber", {'newPhoneNumber':newPhoneNumber})
+        connection.commit()
+    if len(newName) != 0: # user inputted something in newName
+        myCursor.execute("UPDATE userdata SET user_name = :newName", {'newName':newName})
+        connection.commit()
 ########## Hakeem's part ##########
 
 ########## Nabilah's part ##########
@@ -361,7 +383,7 @@ def ViewAppointment(ic): #to view appointment
 
 ########## ajwad's part ###########   
 
-def createVaccinationCenter(): #to create vaccination center
+def createVaccinationCenter(): #to create vaccination center --done
     #in table vaccinationCenters has (rowid int, name text, postcode int, address text, capacityHour int, capacityDay int, state text)
     
     VCNAME = input("Please enter the vaccination center name: ").title().strip()
@@ -392,7 +414,7 @@ def deleteUser(): #to delete user
     print("User deleted.")
     adminPage()
 
-def assignAppointment(hour, day, month, year, userID, vaccCenter):
+def assignAppointment(hour, day, month, year, userID, vaccCenter): # done
     myCursor.execute("UPDATE userdata SET vaccination_date = :vaccDate, vaccination_venue = :vaccVenue, vaccination_time = :vaccTime WHERE rowid = :rowid", 
     {'vaccDate':f"{day}/{month}/{year}", 'vaccVenue':vaccCenter, 'vaccTime':f"{hour}:00", 'rowid':userID})
     connection.commit()
@@ -496,7 +518,7 @@ def userCategory(): #low, medium, high
             print("Please enter a valid input.")
             break
 
-def adminPage(): #admin main menu
+def adminPage(): #admin main menu --done
     print("Welcome admin! What do you want to do? \n1- create vaccination center \n2- update user information \n3- assign appointment for user \n4- sort list of users \n5- view user appointments \n6- logout \n7- exit")
     userInput = int(input())
 
@@ -530,9 +552,10 @@ print('Welcome to MySejahtera!\n')
 #autoAssign()
 #adminPage()
 #createDatabase()
-secAutoAssign()
+#secAutoAssign()
 #signup_func()
 #login_func()
 #createVaccinationCenter()
+rsvp("020732130394")
 ########################################################### WELCOMEPAGE #########################################################################
 
