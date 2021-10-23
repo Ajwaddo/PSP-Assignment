@@ -32,20 +32,21 @@
 
 import sqlite3
 import math
+import datetime
 from operator import itemgetter, pos
 connection = sqlite3.connect('user.db')
 myCursor = connection.cursor()
 def createDatabase():
     myCursor.execute("DROP TABLE userdata")
     print("table dropped")
-    myCursor.execute("CREATE TABLE userdata (user_name text, user_age text, ic_number text, phone_number text, post_code text, home_address text, q1_1 text, q1_2 text, q1_3 text, q1_4 text, q1_5 text, q1_6 text, q1_7 text, q2_1 text, q2_2 text, q2_3 text, q2_4 text, q2_5 text, q2_6 text, q2_7 text, priority text, priority1 text, priority2 text, vaccination_date text, vaccination_time text, vaccination_venue text, preferred_time text, preferred_date text, rsvp text)")
-#in user.db, it has one table(userdata) that contains(0rowid int, 1user_name text, 2user_age text, 3ic_number text, 4phone_number text, 5post_code text, 6home_address text, 7q1_1 text, 8q1_2 text, 9q1_3 text, 10q1_4 text, 11q1_5 text, 12q1_6 text, 13q1_7 text, 14q2_1 text, 15q2_2 text, 16q2_3 text, 17q2_4 text, 18q2_5 text, 19q2_6 text, 20q2_7 text, 21priority text, 22priority1 text, 23priority2 text, 24vaccination_date text, 25vaccination_time text, 26vaccination_venue text, 27preferred_time text, 28preffered_date text, 29rsvp text) 
+    myCursor.execute("CREATE TABLE userdata (user_name text, user_age text, ic_number text, phone_number text, post_code text, home_address text, q1_1 text, q1_2 text, q1_3 text, q1_4 text, q1_5 text, q1_6 text, q1_7 text, q2_1 text, q2_2 text, q2_3 text, q2_4 text, q2_5 text, q2_6 text, q2_7 text, priority text, priority1 text, priority2 text, vaccination_date text, vaccination_time text, vaccination_venue text, preferred_time text, preferred_date text, rsvp text, state text)")
+#in user.db, it has one table(userdata) that contains(0rowid int, 1user_name text, 2user_age text, 3ic_number text, 4phone_number text, 5post_code text, 6home_address text, 7q1_1 text, 8q1_2 text, 9q1_3 text, 10q1_4 text, 11q1_5 text, 12q1_6 text, 13q1_7 text, 14q2_1 text, 15q2_2 text, 16q2_3 text, 17q2_4 text, 18q2_5 text, 19q2_6 text, 20q2_7 text, 21priority text, 22priority1 text, 23priority2 text, 24vaccination_date text, 25vaccination_time text, 26vaccination_venue text, 27preferred_time text, 28preffered_date text, 29rsvp text, 30state text) 
 
 myCursor.execute("SELECT rowid, * FROM userdata") #query all data from userdata table
-listUser = myCursor.fetchall() #store all data in database into a tuple list listUser
+listUser = myCursor.fetchall() #store all data in database into a tuple in list listUser
 
 myCursor.execute("SELECT rowid, * FROM vaccinationCenters") #query all data from vaccinationCenters table
-listVaccinationCenters = myCursor.fetchall() #store all data in database into a tuple list listVaccinationCenters
+listVaccinationCenters = myCursor.fetchall() #store all data in database into a tuple in list listVaccinationCenters
 
 ########## Hannah's part ##########
 ########################################################### FUNCTIONS FOR WELCOMEPAGE #########################################################################
@@ -86,9 +87,10 @@ def signup_func(): #signup page
     phone = input('Phone number: E.g 6017890382 \n').strip()
     postcode=int(input('Postcode: \n'))
     address=input('Address: \n').strip()
+    state = input('State: \n').strip()
     
 
-    myCursor.execute("INSERT INTO userdata (user_name , user_age, ic_number, phone_number, post_code, home_address) VALUES (?, ?, ?, ?, ?, ?)", (name, age, ic, phone, postcode, address))
+    myCursor.execute("INSERT INTO userdata (user_name , user_age, ic_number, phone_number, post_code, home_address, state) VALUES (?, ?, ?, ?, ?, ?, ?)", (name, age, ic, phone, postcode, address, state))
     connection.commit()
     print("New user successfully registered!")
     rsvp(ic)
@@ -360,16 +362,17 @@ def ViewAppointment(ic): #to view appointment
 ########## ajwad's part ###########   
 
 def createVaccinationCenter(): #to create vaccination center
-    #in table vaccinationCenters has (rowid int, name text, postcode int, address text, capacityHour int, capacityDay int)
+    #in table vaccinationCenters has (rowid int, name text, postcode int, address text, capacityHour int, capacityDay int, state text)
     
     VCNAME = input("Please enter the vaccination center name: ").title().strip()
     VCPOSTCODE = int(input("Please enter the postcode: "))
     VCADDRESS = input("Please enter the address: ")
+    VCSTATE = input("Please enter the state: ")
     VCCAPACITYHOUR = int(input("Please enter the capacity per hour: "))
     VCCAPACITYDAY = int(input("Please enter the capacity per day: "))
 
     #insert data to database
-    myCursor.execute("INSERT INTO vaccinationCenters (name, postcode, address, capacityHour, capacityDay) VALUES (?, ?, ?, ?, ?)", (VCNAME, VCPOSTCODE, VCADDRESS, VCCAPACITYHOUR, VCCAPACITYDAY))
+    myCursor.execute("INSERT INTO vaccinationCenters (name, postcode, address, capacityHour, capacityDay, state) VALUES (?, ?, ?, ?, ?, ?)", (VCNAME, VCPOSTCODE, VCADDRESS, VCCAPACITYHOUR, VCCAPACITYDAY, VCSTATE))
     connection.commit()
 
     print("Vaccination center has been registered succesfully")
@@ -389,71 +392,49 @@ def deleteUser(): #to delete user
     print("User deleted.")
     adminPage()
 
-def autoAssign():
-    #get user with no appointment
-    for value in listUser: #show user without appointment
-        dictcenterpostcode = {}
-        listdiffpostcode = []
-        nearestpostcodecenter = 0
-        postcodeDifference = 0
-        userID = value[0]
-        username = value[1]
-        appointmentDate = value[24]
-        postcode = value[5] #get their postcode
-        if appointmentDate == None:
-            print(f"user ID: {userID} | username: {username} | appointment date: {appointmentDate} | postcode: {postcode}")
-            for value in listVaccinationCenters: #show vaccination center's row id, name, and postcode
-                centerPostcode = value[2] #get vaccination center postcode
-                postcodeDifference = int(math.fabs(centerPostcode - int(postcode))) #get postcode difference in absolute value
-                dictcenterpostcode[postcodeDifference] = centerPostcode
-                listdiffpostcode.append(postcodeDifference)
-            listdiffpostcode.sort()
-            nearestpostcodecenter = dictcenterpostcode[listdiffpostcode[0]] #get the postcode of the nearest center
-
-        nearestCenter = myCursor.execute("SELECT * FROM vaccinationCenters WHERE postcode = :postcode", {'postcode':nearestpostcodecenter})
-        
-        for value in nearestCenter:
-            centerName = value[0]
-            capacityHour = value[3]
-            capacityDay = value[4]
-
-            print(f"Nearest center: {centerName} | postcode: {nearestpostcodecenter} | capacity per hour: {capacityHour} | capacity per day: {capacityDay}")
-            print("-"*50)
-    
-    #check what day is free
-    #check what hour is free
-    #assign for user
-
-def assignAppointment(): #to assign appointment
-    print("User without appointment date: \n")
-
-    for value in listUser: #show user without appointment
-        userID = value[0]
-        username = value[1]
-        appointmentDate = value[24]
-        if appointmentDate == None:
-            print(f"user ID: {userID} | username: {username} | appointment date: {appointmentDate}")
-    print("-"*50)
-    print("Vaccination Center: \n")
-    for value in listVaccinationCenters: #show vaccination center's row id, name, and postcode
-        print(f"Vaccination center ID: {value[0]} | Name: {value[1]} | Postcode: {value[2]}")
-    print("-"*50)
-
-    selectUser = int(input("Enter the user ID: "))
-    newAppointmentDate = input("Please enter the appointment date (dd/mm/yyyy): ")
-    newAppointmentTime = input("Please enter the appointment time (24-hour): ")
-    newAppointmentVenueID = int(input("Please enter the vaccination center ID: "))
-
-    myCursor.execute("SELECT name FROM vaccinationCenters WHERE rowid = :newAppointmentVenueID", {"newAppointmentVenueID":newAppointmentVenueID})
-    newAppointmentVenue = myCursor.fetchone()
-    for value in newAppointmentVenue:
-        centerName = value
-    
-    #update into database
-    myCursor.execute("UPDATE userdata SET vaccination_date = :newAppointmentDate, vaccination_time = :newAppointmentTime, vaccination_venue = :newAppointmentVenue WHERE rowid = :selectUser", 
-    {'newAppointmentDate':newAppointmentDate, 'newAppointmentTime':newAppointmentTime, 'newAppointmentVenue':centerName, 'selectUser':selectUser})
+def assignAppointment(hour, day, month, year, userID, vaccCenter):
+    myCursor.execute("UPDATE userdata SET vaccination_date = :vaccDate, vaccination_venue = :vaccVenue, vaccination_time = :vaccTime WHERE rowid = :rowid", 
+    {'vaccDate':f"{day}/{month}/{year}", 'vaccVenue':vaccCenter, 'vaccTime':f"{hour}:00", 'rowid':userID})
     connection.commit()
-    print("user appointment updated!")
+
+def secAutoAssign():
+    date_function = datetime.datetime.now()
+    time_function = datetime.datetime.now()
+    day = int(date_function.strftime('%d'))
+    month = int(date_function.strftime('%m'))
+    year = int(date_function.strftime('%Y'))
+    hour = int(time_function.strftime('%H'))
+    
+    # store user info yang tak dapat appointment lagi & yang dah dapat appointment dah dalam list
+    userWithoutAppointment = [[i[0], i[30]] for i in listUser if i[24] == None] # userID, userState
+    userWithAppointment = [[i[0], i[26], i[24][0:2], i[24][3:5], i[25][0:2]] for i in listUser if i[24] != None] # userID, userVenue, userDay, userMonth, userTime
+
+    # check day free or not
+    for i in listVaccinationCenters:
+        userPerDay = 0
+        userPerHour = 0
+        vaccCenter = i[1]
+        maxPerDay = i[5]
+        maxPerHour = i[4]
+        vaccState = i[6]
+
+        myCursor.execute("SELECT rowid FROM userdata WHERE vaccination_venue = :vaccVenue and vaccination_date = :vaccDate", {'vaccVenue':vaccCenter, 'vaccDate':f"{day}/{month}/{year}"})
+        userPerDay += len(myCursor.fetchall())
+
+        if userPerDay < maxPerDay:
+            myCursor.execute("SELECT rowid FROM userdata WHERE vaccination_venue = :vaccVenue and vaccination_date = :vaccDate and vaccination_time = :vaccTime", {'vaccVenue':vaccCenter, 'vaccDate':f"{day}/{month}/{year}", 'vaccTime':f"{hour}:00"})
+            userThisHour = myCursor.fetchall()
+            userPerHour += (len(userThisHour))
+
+            if userPerHour < maxPerHour:
+                for i in userWithoutAppointment:
+                    userID = i[0]
+                    userState = i[1]
+                    
+                    if vaccState == userState:
+                        assignAppointment(hour, day, month, year, userID, vaccCenter)
+        else:
+            day += 1
       
 def sortList(): #sort list of users
     #choose to sort list by what
@@ -546,9 +527,10 @@ print('Hello user!')
 print('Welcome to MySejahtera!\n')
 #welcome_func()
 #assignAppointment()
-autoAssign()
+#autoAssign()
 #adminPage()
 #createDatabase()
+secAutoAssign()
 #signup_func()
 #login_func()
 #createVaccinationCenter()
