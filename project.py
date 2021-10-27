@@ -5,7 +5,7 @@
 # Trimester: 2110
 # Year: 2021/22 Trimester 1
 # Member_1: 1211103139 | HANNAH SOFEA BINTI ROSLEE | 1211103139@student.mmu.edu.my | +60123616790
-# Member_2: ID | NAME | EMAIL | PHONES
+# Member_2: 1211103830| HAKEEM BIN AMINUDIN | 1211103830@student.mmu.edu.my | +601121380773
 # Member_3: 1211103138 | NURUL NABILAH BINTI MOHD NOOR HAKIM | 1211103138@student.mmu.edu.my | +60132027946
 # Member_4: 1211103128 | MUHAMMAD AJWAD BIN MOHAMAD A'SIM | 1211103128@student.mmu.edu.my | +601154261979
 # *********************************************************
@@ -150,13 +150,30 @@ print('Welcome to MySejahtera!\n')
 
 ########## Hakeem's part ##########
 def rsvp(user): #questions about appointment confirmation
-    print('1. Are you confirm to take the COVID-19 vaccine at the date given')
-    q1 = input('("Y/N"):')
+    print("_"*50)
+    def preferredTimeDate(ic):
+        for value in listUser:
+            IC = value[3]
+            Name = value[1]
+            if IC == ic:
+                print(f"Hello, {Name}!")
+                if value[25] == None:
+                    print("sorry you don't have appointment date yet.")
+                    if value[27]: #to check whether user have appointment or not
+                        print("please wait for your appointment.")
+                        print("_"*50)
+                        mainMenu(ic)
+                    else:
+                        print("-"*50)
+                        preferredTimeDate(ic)
+                else:
+                    print(f"date = {value[24]} | time = {value[25]} | venue = {value[26]}")
+                    print('1. Are you confirm to take Covid-19 vaccine at the date given')
+                    q1 = input('("Y/N"):')
 
-    if q1 == "Y" or q1 == "n":
-         print("Thank you for your answer")
-    elif q1 == "N" or q1 == "n":
-        print("do you want to apply new appointment")
+                    if q1 == "Y" or q1 == "y":
+                        print ("Thank you for your answer")
+                    elif q1 == "N" or q1 == "n":
 ########## Hakeem's part ##########
 
 ########## Nabilah's part ##########
