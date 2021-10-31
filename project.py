@@ -166,7 +166,6 @@ def rsvp(ic): #questions about appointment confirmation
                     connection.commit()
                 mainMenu(ic)
                 
-
 def editUser(ic):
     newPhoneNumber = input("Please enter your new phone number: ")
     newName = input("Please enter your new name: ")
