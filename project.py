@@ -443,18 +443,20 @@ def secAutoAssign():
         myCursor.execute("SELECT rowid FROM userdata WHERE vaccination_venue = :vaccVenue and vaccination_date = :vaccDate", {'vaccVenue':vaccCenter, 'vaccDate':f"{day}/{month}/{year}"})
         userPerDay += len(myCursor.fetchall())
 
-        if userPerDay < maxPerDay:
+        if userPerDay < maxPerDay and day < 28:
             myCursor.execute("SELECT rowid FROM userdata WHERE vaccination_venue = :vaccVenue and vaccination_date = :vaccDate and vaccination_time = :vaccTime", {'vaccVenue':vaccCenter, 'vaccDate':f"{day}/{month}/{year}", 'vaccTime':f"{hour}:00"})
             userThisHour = myCursor.fetchall()
             userPerHour += (len(userThisHour))
 
-            if userPerHour < maxPerHour:
+            if userPerHour < maxPerHour and hour >= 8 and hour<=18:
                 for i in userWithoutAppointment:
                     userID = i[0]
                     userState = i[1]
                     
                     if vaccState == userState:
                         assignAppointment(hour, day, month, year, userID, vaccCenter)
+            else:
+                hour += 1
         else:
             day += 1
       
@@ -488,10 +490,10 @@ def sortList(): #sort list of users
         for value in myCursor.execute("SELECT * FROM userdata ORDER BY phone_number"):
             print(value)
         exit()         
-    elif userInput == 5: #sort by postcode
-        for value in myCursor.execute("SELECT * FROM userdata ORDER BY post_code"):
-            print(value)
-        exit()
+    # elif userInput == 5: #sort by postcode
+    #     for value in myCursor.execute("SELECT * FROM userdata ORDER BY post_code"):
+    #         print(value)
+    #     exit()
     elif userInput == 6: #sort by priority
         for value in myCursor.execute("SELECT * FROM userdata ORDER BY priority"):
             print(value)
@@ -552,10 +554,11 @@ print('Welcome to MySejahtera!\n')
 #autoAssign()
 #adminPage()
 #createDatabase()
-#secAutoAssign()
+secAutoAssign()
 #signup_func()
 #login_func()
 #createVaccinationCenter()
-rsvp("020732130394")
+#rsvp("020732130394")
+#mainMenu("030102020131")
 ########################################################### WELCOMEPAGE #########################################################################
 
