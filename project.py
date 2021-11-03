@@ -184,7 +184,7 @@ def rsvp(ic): #questions about appointment confirmation
                         myCursor.execute("UPDATE userdata SET rsvp vaccination_date = none, vaccination_time = none, vaccination_venue = none WHERE ic_number = : IC", {'IC':IC})
                         connection.commit()
 
-def editUser(ic):
+def editUser(ic): #to edit user data
     # update userdata 
     icNumber = input("Please enter IC: ")
     newName = input("Please enter your new name: ")
