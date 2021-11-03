@@ -174,7 +174,8 @@ def rsvp(ic): #questions about appointment confirmation
                     if q1 == "Y" or q1 == "y":
                         print ("Thank you for your answer")
                         #store user input
-                        myCursor.execute("UPDATE userdata SET rsvp:q1 WHERE ic_number")
+                        myCursor.execute("UPDATE userdata SET rsvp q1 = yes WHERE ic_number = IC", {'IC':IC})
+                        connection.commit()
                     elif q1 == "N" or q1 == "n":
                          #update table
                         newVaccinationDate = None
