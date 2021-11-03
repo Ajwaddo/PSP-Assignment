@@ -149,12 +149,12 @@ print('Welcome to MySejahtera!\n')
 ######### Hannah's part ##########
 
 ########## Hakeem's part ##########
-def rsvp(user): #questions about appointment confirmation
+def rsvp(ic): #questions about appointment confirmation
     print("-"*50)
     def preferredTimeDate(ic):
         for value in listUser:
-            IC = value[3] #assign value on index to IC
-            Name = value[1] #assign value on index to IC
+            IC = value[3] 
+            Name = value[1] 
             if IC == ic:
                 print(f"Hello, {Name}!")
                 if value[25] == None:
@@ -174,12 +174,52 @@ def rsvp(user): #questions about appointment confirmation
                     if q1 == "Y" or q1 == "y":
                         print ("Thank you for your answer")
                         #store user input
-                        myCursor.execute("UPDATE userdata SET rsvp:q1 WHERE ic_number"
+                        myCursor.execute("UPDATE userdata SET rsvp:q1 WHERE ic_number")
                     elif q1 == "N" or q1 == "n":
-                        #preferredTimeDate(ic)
+                         #update table
+                        newVaccinationDate = None
+                        newVaccinationTime = None
+                        newVaccinationVenue = None
+                        
+                        myCursor.execute("UPDATE userdata SET rsvp vaccination_date = none, vaccination_time = none, vaccination_venue = none WHERE ic_number = : IC", {'IC':IC})
+                        connection.commit()
 
-                        #update in database
-                    mainMenu
+def editUser(ic):
+    # update userdata 
+    icNumber = input("Please enter IC: ")
+    newName = input("Please enter your new name: ")
+    newAddress = input("Please enter your new address: ")
+    newPostcode = input("please enter your new post code: ")
+    newNumber = input("please enter your new number: ")
+    
+
+    if len(newName) == 0: # if no input from user
+        pass
+    else:
+        myCursor.execute(""" UPDATE userdata SET user_name = :newName WHERE ic_number = :icNumber""", {'icNumber':icNumber,'newName':newName})
+        connection.commit()
+
+    if len(newAddress) == 0:
+        pass
+    else:
+        myCursor.execute("UPDATE userdata SET home_address = :newAddress WHERE ic_number = :icNumber " , {'icNumber':icNumber, 'newAddress':newAddress})
+        connection.commit()
+
+    if len(newPostcode) == 0:
+        pass
+    else:
+        myCursor.execute("UPDATE userdata SET post_code = :newPostcode WHERE ic_number = :icNumber " , {'icNumber':icNumber, 'newAddress':newPostcode})
+        connection.commit()
+
+    if len(newNumber) == 0:
+        pass
+    else:
+        myCursor.execute("UPDATE userdata SET phone_number = :newNumber WHERE ic_number = :icNumber " , {'icNumber':icNumber, 'newNumber':newNumber})
+        connection.commit()
+    
+    print("Your data has been update succesfully")
+
+
 ########## Hakeem's part ##########
 
 ########## Nabilah's part ##########
