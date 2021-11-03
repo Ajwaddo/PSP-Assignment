@@ -187,11 +187,18 @@ def rsvp(ic): #questions about appointment confirmation
 def editUser(ic): #to edit user data
     # update userdata 
     icNumber = input("Please enter IC: ")
+    newicNumber = input("Please enter your new name: ")
     newName = input("Please enter your new name: ")
     newAddress = input("Please enter your new address: ")
     newPostcode = input("please enter your new post code: ")
     newNumber = input("please enter your new number: ")
     
+
+    if len(newicNumber) == 0: # if no input from user
+        pass
+    else:
+        myCursor.execute(" UPDATE userdata SET ic_number = :newicNumber WHERE ic_number = :icNumber", {'icNumber':icNumber,'newicNumber':newicNumber})
+        connection.commit()
 
     if len(newName) == 0: # if no input from user
         pass
